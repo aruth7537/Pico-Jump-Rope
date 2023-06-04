@@ -1,0 +1,272 @@
+pico-8 cartridge // http://www.pico-8.com
+version 41
+__lua__
+
+function game_init()
+    data_deaths = 0
+	data_flag = { 0, 0, 0, 0, 0, 0, 0, 0} 
+	data_high_score = 0
+
+	data_load()
+	coin_init()
+	cans_init()
+	birds_init()
+	vfx_init()
+	player_init()
+	add_new_can(32, 76, 1)
+	
+	game_message = ""
+	first_game_message()
+
+	-- Game Variables
+	game_score = 0
+	game_score_end = 100
+	game_lives = 3
+	game_stage = 1
+	game_stage_ui_x = 92
+	game_stage_ui_y = 7
+	game_scale = 1
+	game_scale_target = 1
+	game_script = nil
+	game_script_timer = -1
+	game_data_index = 0
+	game_time = 0
+
+	game_data_length = 0
+	game_data_next = 0
+
+	game_sky_color = 2
+	test = distance( 50, 50, 1, 1)
+
+	jump_forgivness_timer = 0
+	jump_forgivness = 5 -- Frames of forgivness we give the player
+	jump_released = false
+
+	anim_frame_length = 3
+	anim_counter = 0
+	frame_counter = 1
+	num_of_anims = count(player_jump_animations)
+	num_of_frames = count(player_jump_animations[player_jump_anim_index])
+
+	--Game Over
+	game_over_logo_x = 49
+	game_over_logo_y = -16
+	game_over_spr = 64
+	game_over_w = 4
+	game_over_h = 2
+	game_over_gravity = 0.25
+	game_over_vsp = 0
+	game_over_floor = 54
+
+	-- Timer Variables 
+	timer = 15.38
+	timer_speed = 0.02
+
+	-- Rope Variables 
+	rope_start_x = 0
+	rope_start_x_target = 0
+	rope_end_x = 128
+	rope_end_x_target = 128
+	rope_y = 54
+	floor_y = 79
+
+	rope_length  = rope_end_x - rope_start_x
+	rope_mid = rope_length/2
+	rope_max = 30
+	rope_rot = 0
+	rope_hit_point = 1
+	rope_sound_played = false 
+
+	dist = 0
+	dist_last = dist
+	dist_sign = sgn(dist)
+	dist_last_sign = sgn(dist)
+
+	-- Coin Variables
+	coin_sounds = {11,17,18,19,20}
+
+	-- Color variables
+	col_gradient = {0,1,5,13,6,7}
+	col_max = 6
+	col_index = 1
+	col = 7
+	alt_color = false
+end
+
+function game_update() 
+	-- Increase game timer 
+	timer += timer_speed * game_scale
+
+	-- Increate game time
+	game_time += 1
+	
+	-- Lerp game scale
+	game_scale = lerp(game_scale, game_scale_target, 0.05)
+	
+	--Record previous dist
+	dist_last = dist
+	dist_last_sign = sgn(dist_last)
+	
+	-- Increase Rope Rotation
+	rope_rot = sin(timer)*rope_max
+	dist = cos(timer)*rope_max
+	dist_sign = sgn(dist)
+
+	-- Increase game score 
+	--increase_score()
+	
+	-- Do rope hitting ground sound
+	sfx_hit_ground() 
+	
+	-- Game script timer step 
+	step_game_script_timer()
+	
+	-- Player step event
+	step_player() 
+
+	-- Spawn things
+	spawn_things()
+
+	-- Update all coins
+	for c in all (coins) do
+		c:update()
+	end
+
+	-- Update  Cans
+	for c in all (cans) do
+		c:update()
+	end
+
+	-- Update  birds
+	for b in all (birds) do
+		b:update()
+	end
+
+	-- Update  vfx
+	for v in all (vfx) do
+		v:update()
+	end
+	
+	-- Game over step event
+	step_game_over()
+	
+	if (btnp(5)) then
+		reset_data()
+		_init()
+	end
+	--if (btnp(3)) game_scale -= 0.2
+end
+
+
+function game_draw()
+    -- Clear the screen
+    cls()
+
+    --Draw the map
+    if (game_stage>=5) pal(3, 2, 0)
+    map(0,0,0,0,16,16)
+    pal()
+    
+    -- Draw some debug shit 
+    --debug_print()
+    -- Draw the player behind of the rope 
+
+    -- Draw  vfx (This is drawn in reverse order to get older objects to appear in front of new objects)
+    for i = #vfx, 1, -1 do
+        vfx[i]:draw()
+    end
+
+    if(dist >= 0) then
+        draw_player()
+        draw_game_over()
+    end
+
+    -- Draw Coin
+    for c in all (coins) do
+        c:draw()
+    end
+
+    -- Draw Next Coin 
+    -- spr(next_coin_anim[next_coin_anim_index],next_coin_x+1,next_coin_y+1)
+    -- if(game_time % next_coin_anim_speed == 0) next_coin_anim_index += 1
+    -- if(next_coin_anim_index > count(next_coin_anim)) next_coin_anim_index = 1
+
+    -- Draw  Cans
+    for c in all (cans) do
+        c:draw()
+    end
+
+    -- Draw  birds
+    for b in all (birds) do
+        b:draw()
+    end
+
+    -- Draw the rope
+    for i=0,rope_length do
+        -- Calculate the y position of each pixel of rope
+        d_y = rope_y+sin(i/(rope_length*2))*rope_rot
+        d_y_capped = min(d_y, floor_y)
+        
+        -- Calculate the color of each pixel of rope
+        col_index = 4
+        if(dist > 18.25) col_index = col_index+1
+        if(dist > 7 ) col_index = col_index+1
+        if(dist <-7 ) col_index = col_index-1
+        if(dist <-14) col_index = col_index-1
+        if(dist <-19) col_index = col_index-1
+        
+        dist_from_mid = abs(i - rope_mid)
+        if(dist_from_mid > 30) push_to_mid() -- 30
+        if(dist_from_mid > 35) push_to_mid() -- 45
+        if(dist_from_mid > 55) push_to_mid() -- 55
+        
+        -- Cap Col_index
+        col_index = max(min(col_index, col_max), 0)
+        
+        -- Grab Pixel color
+        if(col_index == 1) then
+            -- To add depth to the darkest pixel will alternate between black and grey
+            if(alt_color == true) then
+                alt_color = false
+                col = col_gradient[2]
+            else
+                alt_color = true
+                col = col_gradient[1]
+            end
+        else
+            col = col_gradient[col_index]
+        end
+        
+        -- Checks when rope passes the center
+
+        if( dist_sign != dist_last_sign) then
+            -- Detect player hit
+            if (col_with_player(i + rope_start_x, d_y_capped) and player_is_hit == false and player_invol_timer <=0) then
+                -- Player Was hit
+                player_hit()
+            end 
+            -- Detect if a can is hit
+            for c in all (cans) do
+                c:point_overlap(i + rope_start_x, d_y_capped)
+            end
+        end 
+            
+        -- Finally draw the pixel
+        pset(i + rope_start_x, d_y_capped, col)
+    end
+    
+    -- Draw the player in front of the rope 
+    if(dist < 0)then 
+        draw_player()
+        draw_game_over()
+    end
+    
+    -- Draw score
+    draw_hud()
+
+    -- Draw UI 
+    draw_stage_hud(game_stage_ui_x, game_stage_ui_y)
+
+    -- Draw game message 
+    draw_game_message()
+end 
