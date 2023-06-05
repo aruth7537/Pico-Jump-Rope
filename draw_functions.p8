@@ -39,21 +39,28 @@ function draw_hud()
 	end
 end 
 
-function draw_stage_hud(_x,_y)
-	local spr_w = 33
+-- function draw_stage_hud(_x,_y)
+-- 	local spr_w = 33
+-- 	local draw_w = flr(spr_w * (game_score/game_score_end))
+-- 	local draw_w2 = flr(spr_w * ((game_score-game_score_end)/game_score_end))
+-- 	-- Draw the text "stage"
+-- 	print("stage: "..game_stage, _x+1, _y-6, 1)
+-- 	print("stage: "..game_stage, _x, _y-7, 7)
+
+-- 	-- Draw The First progress bar
+-- 	sspr(89,0,draw_w,4,_x+1,_y) -- Draw the progress bar
+-- 	sspr(88,8,34,6,_x,_y) -- Draw the UI
+
+-- 	-- Draw the Second Progress bar
+-- 	if(game_stage >= 5) then
+-- 		sspr(89,4,draw_w2,4,_x+1,_y+7) -- Progress Bar
+-- 		sspr(88,8,34,6,_x,_y+6) -- Draw UI 
+-- 	end
+-- end 
+
+function draw_stage_hud(_x, _y, _w)
 	local draw_w = flr(spr_w * (game_score/game_score_end))
-	local draw_w2 = flr(spr_w * ((game_score-game_score_end)/game_score_end))
-	-- Draw the text "stage"
-	print("stage: "..game_stage, _x+1, _y-6, 1)
-	print("stage: "..game_stage, _x, _y-7, 7)
-
-	-- Draw The First progress bar
-	sspr(89,0,draw_w,4,_x+1,_y) -- Draw the progress bar
-	sspr(88,8,34,6,_x,_y) -- Draw the UI
-
-	-- Draw the Second Progress bar
-	if(game_stage >= 5) then
-		sspr(89,4,draw_w2,4,_x+1,_y+7) -- Progress Bar
-		sspr(88,8,34,6,_x,_y+6) -- Draw UI 
-	end
+	sspr(104, 8, 1, 6, _x-1, _y)
+	sspr(105, 8, 6, 6, _x, _y, _w, 6)
+	sspr(112, 8, 2, 6, _x+_w, _y)
 end 

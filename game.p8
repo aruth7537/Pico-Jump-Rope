@@ -97,7 +97,7 @@ function game_update()
 	-- Increase game timer 
 	timer += timer_speed * game_scale
 
-	-- Increate game time
+	-- Increase game time
 	game_time += 1
 	
 	-- Lerp game scale
@@ -265,7 +265,8 @@ function game_draw()
     draw_hud()
 
     -- Draw UI 
-    draw_stage_hud(game_stage_ui_x, game_stage_ui_y)
+    -- draw_stage_hud(game_stage_ui_x, game_stage_ui_y)
+    draw_stage_hud(8, 120, 112)
 
     -- Draw game message 
     draw_game_message()
