@@ -22,8 +22,9 @@ function player_init()
     player_consecutive_jump_timer = 0
     player_consecutive_jump_timer_limit = 3
     player_consecutive_score = 0
-    player_double_jump = true
+    player_double_jump = false
     player_double_jump_flash = false
+    player_double_jump_color = 12
 	player_friction = 0.5
 	player_air_friction = 0.1
 	player_gravity = 0.25
@@ -152,8 +153,8 @@ function step_player()
         player_vspd = 0
         player_consecutive_jump_timer = 0
         player_consecutive_score = 0
-        player_double_jump = false
-        player_double_jump_flash = false
+        --player_double_jump = false
+        --player_double_jump_flash = false
         jump_released = false 
     end 
 end
@@ -200,7 +201,7 @@ function draw_player()
     end
 
     -- Flash Pallet if we have a double jump
-    if(player_double_jump and game_time % 4 == 0) then
+    if(player_double_jump and game_time % 2 == 0) then
         if(player_double_jump_flash) then
             player_double_jump_flash = false
         else
@@ -209,10 +210,10 @@ function draw_player()
     end
 
     if(player_double_jump_flash and player_double_jump) then
-        pal(8, 7)
-        pal(15, 7)
-        pal(9, 7)
-        pal(12, 7)
+        pal(8, player_double_jump_color)
+        pal(15, player_double_jump_color)
+        pal(9, player_double_jump_color)
+        pal(12, player_double_jump_color)
     end
 
     -- Finally Draw the player sprite 

@@ -59,7 +59,10 @@ end
 -- end 
 
 function draw_stage_hud(_x, _y, _w)
-	local draw_w = flr(spr_w * (game_score/game_score_end))
+	local draw_w = clamp((game_score/game_score_end) * _w,  0, _w)
+
+	sspr(88,8, 1,3, _x, _y+1, draw_w, 3)
+
 	sspr(104, 8, 1, 6, _x-1, _y)
 	sspr(105, 8, 6, 6, _x, _y, _w, 6)
 	sspr(112, 8, 2, 6, _x+_w, _y)

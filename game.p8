@@ -150,6 +150,7 @@ function game_update()
 	-- Game over step event
 	step_game_over()
 	
+    -- Debug Event
 	if (btnp(5)) then
 		reset_data()
 		_init()
