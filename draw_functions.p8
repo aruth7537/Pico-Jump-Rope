@@ -31,12 +31,15 @@ end
 function draw_hud()
 	print("score:"..game_score.."0", 1, 1, 1) 
 	print("score:"..game_score.."0", 0, 0, 7) 
+	
 
 	print("lives:", 0, 8, 7)
 
 	for i=1,game_lives do 
 		sspr(9,0,6,4, 16+i*8, 9)
 	end
+	
+	print("scale:"..game_scale, 0,16, 7)
 end 
 
 -- function draw_stage_hud(_x,_y)
