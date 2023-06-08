@@ -227,7 +227,7 @@ function player_hit()
     player_consecutive_jumps = 0
     if(game_lives > 0) then
         player_invol_timer = 60
-        add_new_vfx(player.x, player.y, 0, 0, 0, 0, {22,23,22}, 80, 10)
+        add_new_vfx(player.x, player.y, 0, 0, 0, 0, {22}, 80, 10)
         sfx(12)
     else
         player_is_hit = true

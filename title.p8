@@ -4,6 +4,12 @@ __lua__
 function title_init()
     menu = {"play","unlockables","highscores"}
     menu_index = 1
+    author_string = "a game by avery ruth"
+    author_string_x = 20
+    author_string_y = 112
+    author_string_start_timer = 90
+    author_string_timer = author_string_start_timer
+    animation_timer = 20
 end 
 
 function title_update()
@@ -22,7 +28,16 @@ function title_draw()
     spr(96,24,16,11,8)
 
     -- Me!
-    print("a game by avery ruth.", 0, 120, 1)
+    if(animation_timer <= 0) then
+        local index = 0
+        if(author_string_timer >= 0) author_string_timer-=1
+        for letter in all(author_string) do 
+            index += 1
+            print(letter, author_string_x + index*4, author_string_y - easeInBounce((clamp(author_string_timer-index,0,author_string_start_timer))/author_string_start_timer)*-32, 1)
+        end
+    else
+        animation_timer -= 1
+    end
 
     -- Draw menu 
     for i=1,3 do 

@@ -2,6 +2,30 @@ pico-8 cartridge // http://www.pico-8.com
 version 41
 __lua__
 
+-- Ease out bounce 
+function easeOutBounce(x)
+    local n1 = 7.5625
+    local d1 = 2.75
+
+    if(x < 1 / d1) then
+        return n1 * x * x
+    elseif(x < 2 / d1) then
+        x = x - (1.5 / d1)
+        return n1 * x * x + 0.75
+    elseif(x < 2.5 / d1) then
+        x = x - (2.25 / d1)
+        return n1 * x * x + 0.9375
+    else
+        x = x - (2.625 / d1)
+        return n1 * x * x + 0.984375
+    end
+end
+
+-- Ease in bounce
+function easeInBounce(x)
+    return 1 - easeOutBounce(1 - x)
+end 
+
 -- Lerp function
 function lerp( a, b, t) 
     return a+(b-a)*t
