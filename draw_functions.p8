@@ -39,7 +39,8 @@ function draw_hud()
 		sspr(9,0,6,4, 16+i*8, 9)
 	end
 	
-	print("scale:"..game_scale, 0,16, 7)
+	-- Deubg
+	print("nextstage:"..game_score_end*10, 0,16, 7)
 end 
 
 -- function draw_stage_hud(_x,_y)
@@ -62,7 +63,7 @@ end
 -- end 
 
 function draw_stage_hud(_x, _y, _w)
-	local draw_w = clamp((game_score/game_score_end) * _w,  0, _w)
+	local draw_w = clamp(((game_score-game_score_new_zero)/(game_score_end-game_score_new_zero)) * _w,  0, _w)
 
 	sspr(88,8, 1,3, _x, _y+1, draw_w, 3)
 

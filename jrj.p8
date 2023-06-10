@@ -162,20 +162,22 @@ function increase_score(_value)
 	for i = 1, value do
 		game_score += 1
 		game_data_check()
-		if(game_score%25 == 0) then
+		if(game_score >=  game_score_end) then
 			game_stage += 1
+			game_score_new_zero = game_score
+			game_score_end = game_score_end*2
 			sfx(14)
 		end
 
-		if(game_stage == 1) then
-			if(game_score%25 == 0) game_scale_target = 1.2
-		elseif(game_stage == 2) then
-			if(game_score%50 == 0) game_scale_target = 1.4
-		elseif(game_stage == 3) then
-			if(game_score%75 == 0) game_scale_target = 1.6
-		elseif(game_stage >= 4) then
-			if(game_score%25 == 0) game_scale_target += 0.2
-		end
+		-- if(game_stage == 1) then
+		-- 	if(game_score%25 == 0) game_scale_target = 1.2
+		-- elseif(game_stage == 2) then
+		-- 	if(game_score%50 == 0) game_scale_target = 1.4
+		-- elseif(game_stage == 3) then
+		-- 	if(game_score%75 == 0) game_scale_target = 1.6
+		-- elseif(game_stage >= 4) then
+		-- 	if(game_score%25 == 0) game_scale_target += 0.2
+		-- end
 	end
 end
 
@@ -214,7 +216,7 @@ function spawn_things()
 end
 
 --------------------------------------------------------------
-------------------------    Main     -------------------------
+------------------------    Shit     -------------------------
 --------------------------------------------------------------
 
 -- Main update function 
@@ -223,7 +225,7 @@ function _update()
 end
 
 --------------------------------------------------------------
-------------------------    Draw     -------------------------
+------------------------    Piss     -------------------------
 --------------------------------------------------------------
 
 -- Main draw function 
@@ -231,7 +233,7 @@ function _draw()
 	draw_state()
 end 
 ----------------------------------------------------------------------------
-------------------------    Game Scripts  ----------------------------------
+------------------------    Fart Scripts  ----------------------------------
 ----------------------------------------------------------------------------
 
 --game_scripts

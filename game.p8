@@ -21,6 +21,7 @@ function game_init()
 	-- Game Variables
 	game_score = 0
 	game_score_end = 100
+	game_score_new_zero = 0
 	game_lives = 3
 	game_stage = 1
 	game_stage_ui_x = 92
