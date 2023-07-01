@@ -40,7 +40,7 @@ function draw_hud()
 	end
 	
 	-- Deubg
-	print("nextstage:"..game_score_end*10, 0,16, 7)
+	--print("con score:"..player_consecutive_score*10, 0,16, 7)
 end 
 
 -- function draw_stage_hud(_x,_y)

@@ -4,6 +4,8 @@ __lua__
 
 function coin_init()
     coins = {}
+    -- Coin Variables
+	coin_sounds = {11,17,18,19,20}
     add_new_coin(80,36)
     add_new_coin(40,36)
     next_coin_x = 32+rnd(32)
@@ -54,7 +56,7 @@ function add_new_coin(_x,_y)
                     -- Incorporate the number of jumps taken minus 1 so we don't count the first jump
                     local score = player_consecutive_score --+ clamp(player_consecutive_jumps-1, 0, 2)
                     -- Play coin pickup 
-                    sfx(coin_sounds[score])
+                    sfx(17, -1, clamp(score-1, 0, 9)*3, 3)
                     -- Increase Score 
                     increase_score(score)
                     -- Spawn VFX 

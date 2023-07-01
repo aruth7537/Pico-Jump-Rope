@@ -21,6 +21,7 @@ function game_init()
 	-- Game Variables
 	game_score = 0
 	game_score_end = 100
+	game_score_end_max = 400
 	game_score_new_zero = 0
 	game_lives = 3
 	game_stage = 1
@@ -38,10 +39,6 @@ function game_init()
 
 	game_sky_color = 2
 	test = distance( 50, 50, 1, 1)
-
-	jump_forgivness_timer = 0
-	jump_forgivness = 5 -- Frames of forgivness we give the player
-	jump_released = false
 
 	anim_frame_length = 3
 	anim_counter = 0
@@ -83,8 +80,7 @@ function game_init()
 	dist_sign = sgn(dist)
 	dist_last_sign = sgn(dist)
 
-	-- Coin Variables
-	coin_sounds = {11,17,18,19,20}
+
 
 	-- Color variables
 	col_gradient = {0,1,5,13,6,7}
@@ -112,9 +108,6 @@ function game_update()
 	rope_rot = sin(timer)*rope_max
 	dist = cos(timer)*rope_max
 	dist_sign = sgn(dist)
-
-	-- Increase game score 
-	--increase_score()
 	
 	-- Do rope hitting ground sound
 	sfx_hit_ground() 
@@ -272,4 +265,37 @@ function game_draw()
 
     -- Draw game message 
     draw_game_message()
+end 
+
+-- Increase Score
+function increase_score(_value)
+	-- Set the score amount 
+	value = _value or 1
+	value = clamp(value, 1, 10)
+
+	-- Increase the score incrementally that way we can check for each stage
+	for i = 1, value do
+		game_score += 1
+		game_data_check()
+		if(game_score >=  game_score_end) then
+			increase_stage()
+		end
+
+		-- if(game_stage == 1) then
+		-- 	if(game_score%25 == 0) game_scale_target = 1.2
+		-- elseif(game_stage == 2) then
+		-- 	if(game_score%50 == 0) game_scale_target = 1.4
+		-- elseif(game_stage == 3) then
+		-- 	if(game_score%75 == 0) game_scale_target = 1.6
+		-- elseif(game_stage >= 4) then
+		-- 	if(game_score%25 == 0) game_scale_target += 0.2
+		-- end
+	end
+end
+
+function increase_stage()
+	game_stage += 1
+	game_score_new_zero = game_score
+	game_score_end += min(game_score_end*2, game_score_end_max)--min(game_score_end*2, game_score_end_max)
+	sfx(14)
 end 

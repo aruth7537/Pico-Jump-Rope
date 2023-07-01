@@ -30,6 +30,11 @@ function player_init()
 	player_gravity = 0.25
 	player_invol_timer = 60
 
+    jump_forgivness_timer = 0
+	jump_forgivness = 5 -- Frames of forgivness we give the player
+    jump_pressed = false 
+	jump_released = false
+
 	player_on_ground = true 
 	player_is_hit = false
 
@@ -85,9 +90,9 @@ function step_player()
         player_vspd += player_gravity
         
         -- Control our fall speed
-        if(btn(4) == false and player_vspd < 0 and jump_released == false) then
-            player_vspd *= 0.5
+        if(btn(4) == false  and jump_released == false) then
             jump_released = true
+            if(player_vspd < 0) player_vspd *= 0.5
         end
 
         -- Double Jump Sparkles

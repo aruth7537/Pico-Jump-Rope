@@ -9,3 +9,11 @@ function overlap(a,b)
              or a.y + a.by + a.bh < b.y + b.by)
    end
 
+-- Function to detect if a point collides with the player
+function col_with_player(_x, _y)
+	if (_x >= player.x and _y >= player.y and _x <= player.x+player.bw and _y <= player.y+player.bh) then
+		return true 
+	else
+		return false
+	end
+end
