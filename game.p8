@@ -13,10 +13,11 @@ function game_init()
 	birds_init()
 	vfx_init()
 	player_init()
-	add_new_can(32, 76, 1)
+	lightningbolt_init()
+	fire_init()
+	add_new_can(32, 76, 1, 1)
 	
 	game_message = ""
-	first_game_message()
 
 	-- Game Variables
 	game_score = 0
@@ -37,7 +38,7 @@ function game_init()
 	game_data_length = 0
 	game_data_next = 0
 
-	game_sky_color = 2
+	game_sky_flash = false
 	test = distance( 50, 50, 1, 1)
 
 	anim_frame_length = 3
@@ -74,6 +75,7 @@ function game_init()
 	rope_rot = 0
 	rope_hit_point = 1
 	rope_sound_played = false 
+	rope_passed_center = false
 
 	dist = 0
 	dist_last = dist
@@ -113,7 +115,7 @@ function game_update()
 	sfx_hit_ground() 
 	
 	-- Game script timer step 
-	step_game_script_timer()
+	--step_game_script_timer()
 	
 	-- Player step event
 	step_player() 
@@ -140,7 +142,14 @@ function game_update()
 	for v in all (vfx) do
 		v:update()
 	end
+
+	for v in all (lightningbolt) do
+		v:update()
+	end
 	
+	for v in all (fire) do
+		v:update()
+	end
 	-- Game over step event
 	step_game_over()
 	
@@ -158,13 +167,19 @@ function game_draw()
     cls()
 
     --Draw the map
-    if (game_stage>=5) pal(3, 2, 0)
+    if (game_stage>=5) pal(3, 2, 0) -- change the pal to next iteration
+	if(game_sky_flash) pal({0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},0) -- flash the sky 
     map(0,0,0,0,16,16)
     pal()
     
     -- Draw some debug shit 
     --debug_print()
     -- Draw the player behind of the rope 
+
+	-- Draw  Cans
+	for c in all (cans) do
+		c:draw()
+	end
 
     -- Draw  vfx (This is drawn in reverse order to get older objects to appear in front of new objects)
     for i = #vfx, 1, -1 do
@@ -186,15 +201,21 @@ function game_draw()
     -- if(game_time % next_coin_anim_speed == 0) next_coin_anim_index += 1
     -- if(next_coin_anim_index > count(next_coin_anim)) next_coin_anim_index = 1
 
-    -- Draw  Cans
-    for c in all (cans) do
-        c:draw()
-    end
-
     -- Draw  birds
     for b in all (birds) do
         b:draw()
     end
+
+    -- Draw  Lightningbolts
+    for b in all (lightningbolt) do
+        b:draw()
+    end
+
+	-- Draw  fire
+	for b in all (fire) do
+		b:draw()
+	end
+	
 
     -- Draw the rope
     for i=0,rope_length do
@@ -235,6 +256,7 @@ function game_draw()
         -- Checks when rope passes the center
 
         if( dist_sign != dist_last_sign) then
+			
             -- Detect player hit
             if (col_with_player(i + rope_start_x, d_y_capped) and player_is_hit == false and player_invol_timer <=0) then
                 -- Player Was hit
@@ -244,7 +266,11 @@ function game_draw()
             for c in all (cans) do
                 c:point_overlap(i + rope_start_x, d_y_capped)
             end
-        end 
+
+			if (dist_last_sign == 1) rope_passed_center = true
+        else
+			rope_passed_center = false
+		end
             
         -- Finally draw the pixel
         pset(i + rope_start_x, d_y_capped, col)
@@ -261,7 +287,6 @@ function game_draw()
 
     -- Draw UI 
     -- draw_stage_hud(game_stage_ui_x, game_stage_ui_y)
-    draw_stage_hud(8, 120, 112)
 
     -- Draw game message 
     draw_game_message()
@@ -271,12 +296,11 @@ end
 function increase_score(_value)
 	-- Set the score amount 
 	value = _value or 1
-	value = clamp(value, 1, 10)
 
 	-- Increase the score incrementally that way we can check for each stage
 	for i = 1, value do
 		game_score += 1
-		game_data_check()
+		--game_data_check()
 		if(game_score >=  game_score_end) then
 			increase_stage()
 		end
@@ -296,6 +320,29 @@ end
 function increase_stage()
 	game_stage += 1
 	game_score_new_zero = game_score
-	game_score_end += min(game_score_end*2, game_score_end_max)--min(game_score_end*2, game_score_end_max)
+	game_score_end += min(game_score_end+50, game_score_end_max)--min(game_score_end*2, game_score_end_max)
 	sfx(14)
 end 
+
+function spawn_things()
+	if(game_stage == 1) then      -- STAGE 1 
+		-- Nothing
+	elseif (game_stage == 2) then -- STAGE 2 
+		if(time()%5 == 0) add_new_can(-8, 76, rnd({1,1.1,1.2,1.3,1.4,1.5}), 3) -- Red Cans
+	elseif (game_stage == 3) then -- STAGE 3
+		if(time()%5 == 0) add_new_can(136, 76, -rnd({1.1,1.2,1.3,1.4,1.5,1.6,1.7}), 2) -- Blue Cans
+	elseif (game_stage == 4) then -- STAGE 4
+		if(time()%3 == 0) add_new_can(-32, 76, rnd({1.1,1.2,1.3,1.4,1.5,1.6,1.7}), 1)  -- Red Cans
+		if(time()%5 == 0) add_new_bird(140, 30+rnd(30), rnd({1, 0.9, 0.8}))		
+	elseif (game_stage == 5) then -- STAGE 5 
+		game_scale_target = 1.1
+	elseif (game_stage == 6) then -- STAGE 6
+		if(time()%5 == 0) add_new_can(-8, 76, rnd({1.2,1.3,1.4,1.5,1.6,1.7}), 1)
+	elseif (game_stage == 7) then -- STAGE 7
+		if(time()%5 == 0) add_new_can(-8, 76, rnd({1.2,1.3,1.4,1.5,1.6,1.7}), 1)
+		if(time()%6 == 0) add_new_bird(140, 30+rnd(30), 1.2)
+	elseif (game_stage >= 8) then -- STAGE 8
+		if(time()%3 == 0) add_new_can(-8, 76, rnd({1.2,1.3,1.4,1.5,1.6,1.7}), 1)
+		if(time()%5 == 0) add_new_bird(140, 30+rnd(30), 1.2)
+	end
+end

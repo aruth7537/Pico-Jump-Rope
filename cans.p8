@@ -6,7 +6,7 @@ function cans_init()
     cans = {}
 end
 
-function add_new_can(_x, _y, _hsp)
+function add_new_can(_x, _y, _hsp, _can_type)
     add(cans,{
         x=_x,
         y=_y,
@@ -17,20 +17,30 @@ function add_new_can(_x, _y, _hsp)
         vsp = 0,
         hsp = _hsp,
         grav = 0.25,
-        animation = {38, 37, 36, 35},
-        animation_flying = {51,52,53,54,55,56,57,58},
+        can_type = _can_type or 1,
+        animation = {{38, 37, 36, 35},
+                     {35, 36, 37, 38},
+                     {38, 37, 36, 35},},
+        animation_flying = {{51,52,53,54,55,56,57,58},
+                            {58,57,56,55,54,53,52,51},
+                            {51,52,53,54,55,56,57,58},},
+        main_color = {8,12,10},
         anim_index = 1,
         anim_speed = 3,
         anim_timer = 0,
         is_flying = false,
         can_fly = true,
         can_hurt = true,
+        lightning_strike_timer = 60,
         draw=function(self)
             if(self.is_flying == false) then
-                spr(self.animation[self.anim_index],self.x,self.y)
+                pal(8, self.main_color[self.can_type])
+                spr(self.animation[self.can_type][self.anim_index],self.x,self.y)
             else
-                spr(self.animation_flying[self.anim_index],self.x,self.y)
+                pal(8, self.main_color[self.can_type])
+                spr(self.animation_flying[self.can_type][self.anim_index],self.x,self.y)
             end
+            pal()
         end,
         update=function(self)
             -- Animtation 
@@ -39,14 +49,14 @@ function add_new_can(_x, _y, _hsp)
                 if(self.anim_timer >= self.anim_speed) then
                     self.anim_timer = 0
                     self.anim_index += sgn(self.hsp)
-                    if(self.anim_index > count(self.animation)) self.anim_index = 1
-                    if(self.anim_index < 1) self.anim_index = count(self.animation)
+                    if(self.anim_index > count(self.animation[self.can_type])) self.anim_index = 1
+                    if(self.anim_index < 1) self.anim_index = count(self.animation[self.can_type])
                 end
             else
                 if(self.anim_timer >= self.anim_speed) then
                     self.anim_timer = 0
                     self.anim_index += 1
-                    if(self.anim_index > count(self.animation_flying)) self.anim_index = 1
+                    if(self.anim_index > count(self.animation_flying[self.can_type])) self.anim_index = 1
                 end
             end
             -- Can is flying
@@ -77,10 +87,23 @@ function add_new_can(_x, _y, _hsp)
                 end
             end 
 
+            --Lightning Strike
+            if(self.can_type == 3) then
+                self.lightning_strike_timer-= 1
+                if(self.lightning_strike_timer == 30) then
+                    add_new_vfx(self.x, self.y, self.hsp, -1, 0, 0, {87,88,89,90}, -1, 5)
+                    sfx(19)
+                end
+                if(self.lightning_strike_timer <= 0) then
+                    add_new_lightningbolt(self.x)
+                    del(cans,self)
+                end 
+            end 
+
             -- Physics
             self.x+=self.hsp
             self.y+=self.vsp  
-            
+
             --Remove self if OoB
             if(self.x<-32 or self.x > 160 or self.y<-32 or self.y>160) del(cans,self)
         end,

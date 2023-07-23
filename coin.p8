@@ -56,7 +56,7 @@ function add_new_coin(_x,_y)
                     -- Incorporate the number of jumps taken minus 1 so we don't count the first jump
                     local score = player_consecutive_score --+ clamp(player_consecutive_jumps-1, 0, 2)
                     -- Play coin pickup 
-                    sfx(17, -1, clamp(score-1, 0, 9)*3, 3)
+                    sfx(17, -1, clamp((score-1)%10, 0, 9)*3, 3)
                     -- Increase Score 
                     increase_score(score)
                     -- Spawn VFX 
@@ -103,4 +103,12 @@ function spawn_new_coin()
     else
         add_new_coin(64+rnd(32), 36+rnd(32))
     end
+end
+
+-- Spawn Score
+function spawn_score_vfx(_x, _y, _score,_vsp)
+	vsp = _vsp or -1
+    score_col = {5, 13, 6, 7, 15, 14, 8, 10, 9, 2}
+    score_col_index = min(flr(_score/10)+1, 10) 
+	add_new_vfx(_x, _y, 0, vsp, 0, 0.05, tostr(_score).."0", 30, 5, score_col[score_col_index] )
 end

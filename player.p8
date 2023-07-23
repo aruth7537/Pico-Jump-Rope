@@ -15,8 +15,16 @@ function player_init()
 	player_bottom = player.y + player.bh
 	player_vspd = 0
 	player_hspd = 0
+
+
+    player_hspd_max_normal = 2
+    player_hspd_max_best = 3
 	player_hspd_max = 2
+
+    player_move_speed_normal = 0.25
+    player_move_speed_best = 0.75
 	player_move_speed = 0.15
+
 	player_jumpspeed = 4
     player_consecutive_jumps = 0
     player_consecutive_jump_timer = 0
@@ -119,7 +127,7 @@ function step_player()
         end
 
 
-        -- 4 Jump bonus
+        -- Jump bonus
         if (player_consecutive_jumps >= 3) then
             --After image
             if (game_time % 3 == 0) add_new_vfx(player.x, player.y, 0, 0, 0, 0, {player_jump_animations[player_jump_anim_index][frame_counter]}, 10, 0, 1)

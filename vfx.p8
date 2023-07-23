@@ -25,32 +25,45 @@ function add_new_vfx(_x, _y, _hsp, _vsp, _grav, _fric, _animation, _life, _anim_
         life = _life,
         animation = _animation,
         effect = _effect or 0,
+        str_col = 7,
         draw=function(self)
             -- After Image Effect
             if(self.effect == 1) pal({0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, 0)
+            if(self.effect > 1) self.str_col = self.effect
 
-            -- Draw Sprite
-            spr(self.animation[self.anim_index], self.x, self.y)   
-            pal()  
+            -- Draw Sprite or String depending on if animation is a table or string
+            if(type(self.animation) == "table") then
+                spr(self.animation[self.anim_index], self.x, self.y)   
+                pal()  
+            else
+                print(self.animation, self.x+1, self.y+1, 1)
+                print(self.animation, self.x, self.y, self.str_col)
+            end
         end,
         update=function(self)
+            self.life -= 1
             -- Animation 
             self.anim_timer += 1
-            if(self.anim_timer >= self.anim_speed) then
-                self.anim_timer = 0
-                self.anim_index += 1
-                if(self.anim_index > count(self.animation)) then
-                    self.anim_index = 1
-                    if(self.life <= 0) del(vfx,self)
-                end
-            end    
+            if(type(self.animation) == "table") then 
+                if(self.anim_timer >= self.anim_speed) then
+                    self.anim_timer = 0
+                    self.anim_index += 1
+                    if(self.anim_index > count(self.animation)) then
+                        self.anim_index = 1
+                        if(self.life <= 0) del(vfx,self)
+                    end
+                end 
+            else
+                if(self.life <= 0) del(vfx,self)
+            end 
             -- Physics 
             if (self.grav > 0) self.vsp += self.grav
             if (self.fric > 0) self.hsp = approach(self.hsp, 0, self.fric)
             if (self.fric > 0) self.vsp = approach(self.vsp, 0, self.fric)
             self.x += self.hsp
             self.y += self.vsp
-            self.life -= 1
+
+
         end,
     }, index)
 end 

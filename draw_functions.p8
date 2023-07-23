@@ -38,9 +38,12 @@ function draw_hud()
 	for i=1,game_lives do 
 		sspr(9,0,6,4, 16+i*8, 9)
 	end
-	
-	-- Deubg
+
+	draw_stage_hud(8, 120, 112)
+	print("stage:"..game_stage, 50,112) 
 	--print("con score:"..player_consecutive_score*10, 0,16, 7)
+
+	
 end 
 
 -- function draw_stage_hud(_x,_y)
