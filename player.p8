@@ -12,6 +12,7 @@ function player_init()
 		bw = 6,
 		bh = 7
 	}
+    
 	player_bottom = player.y + player.bh
 	player_vspd = 0
 	player_hspd = 0

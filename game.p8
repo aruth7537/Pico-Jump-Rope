@@ -18,6 +18,7 @@ function game_init()
 	add_new_can(32, 76, 1, 1)
 	
 	game_message = ""
+	game_message_life = 0
 
 	-- Game Variables
 	game_score = 0
@@ -28,6 +29,7 @@ function game_init()
 	game_stage = 1
 	game_stage_ui_x = 92
 	game_stage_ui_y = 7
+	game_stage_has_changed = false
 	game_scale = 1
 	game_scale_target = 1
 	game_script = nil
@@ -39,6 +41,10 @@ function game_init()
 	game_data_next = 0
 
 	game_sky_flash = false
+	game_map_pal_index = 1
+	game_map_pal = {{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}, -- Default Stage 1 - 4
+					{1,2,2,4,5,6,7,8,9,10,11,12,13,14,15}, -- Index 2 Stage 5 - 8
+					{1,1,1,1,1,1,1,1,1,1 ,1 ,1 ,1 ,1 ,1 },}
 	test = distance( 50, 50, 1, 1)
 
 	anim_frame_length = 3
@@ -82,8 +88,6 @@ function game_init()
 	dist_sign = sgn(dist)
 	dist_last_sign = sgn(dist)
 
-
-
 	-- Color variables
 	col_gradient = {0,1,5,13,6,7}
 	col_max = 6
@@ -92,7 +96,15 @@ function game_init()
 	alt_color = false
 end
 
+------------
+------------ UPDATE STEP 
+------------
+
 function game_update() 
+
+	-- Setup game_stage_has_changed 
+	game_stage_has_changed = false
+
 	-- Increase game timer 
 	timer += timer_speed * game_scale
 
@@ -119,9 +131,6 @@ function game_update()
 	
 	-- Player step event
 	step_player() 
-
-	-- Spawn things
-	spawn_things()
 
 	-- Update all coins
 	for c in all (coins) do
@@ -150,6 +159,13 @@ function game_update()
 	for v in all (fire) do
 		v:update()
 	end
+
+	-- Spawn things
+	spawn_things()
+
+	-- Game Message DO THIS AFTER EVERYTHING 
+	game_message_update()
+
 	-- Game over step event
 	step_game_over()
 	
@@ -161,20 +177,21 @@ function game_update()
 	--if (btnp(3)) game_scale -= 0.2
 end
 
+------------
+------------ DRAW STEP 
+------------
 
 function game_draw()
     -- Clear the screen
     cls()
 
-    --Draw the map
-    if (game_stage>=5) pal(3, 2, 0) -- change the pal to next iteration
-	if(game_sky_flash) pal({0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},0) -- flash the sky 
+	--- Color the Map
+    pal(game_map_pal[game_map_pal_index], 0)
+	if(game_sky_flash) pal({0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},0) -- flash the sky
+	
+	--- Draw the map
     map(0,0,0,0,16,16)
     pal()
-    
-    -- Draw some debug shit 
-    --debug_print()
-    -- Draw the player behind of the rope 
 
 	-- Draw  Cans
 	for c in all (cans) do
@@ -292,6 +309,10 @@ function game_draw()
     draw_game_message()
 end 
 
+------------
+------------ OTHER SHIT
+------------
+
 -- Increase Score
 function increase_score(_value)
 	-- Set the score amount 
@@ -322,27 +343,63 @@ function increase_stage()
 	game_score_new_zero = game_score
 	game_score_end += min(game_score_end+50, game_score_end_max)--min(game_score_end*2, game_score_end_max)
 	sfx(14)
+	game_stage_has_changed = true
 end 
 
 function spawn_things()
 	if(game_stage == 1) then      -- STAGE 1 
 		-- Nothing
 	elseif (game_stage == 2) then -- STAGE 2 
-		if(time()%5 == 0) add_new_can(-8, 76, rnd({1,1.1,1.2,1.3,1.4,1.5}), 3) -- Red Cans
+		if(game_stage_has_changed) set_message("stage 2", 60)
+		if(time()%5 == 0) add_new_can(-8, 76, rnd({1,1.1,1.2,1.3,1.4,1.5}), 1) -- Red Cans
+
 	elseif (game_stage == 3) then -- STAGE 3
+		if(game_stage_has_changed) set_message("stage 3", 60)
 		if(time()%5 == 0) add_new_can(136, 76, -rnd({1.1,1.2,1.3,1.4,1.5,1.6,1.7}), 2) -- Blue Cans
+
 	elseif (game_stage == 4) then -- STAGE 4
+		if(game_stage_has_changed) set_message("stage 4", 60)
 		if(time()%3 == 0) add_new_can(-32, 76, rnd({1.1,1.2,1.3,1.4,1.5,1.6,1.7}), 1)  -- Red Cans
-		if(time()%5 == 0) add_new_bird(140, 30+rnd(30), rnd({1, 0.9, 0.8}))		
+		if(time()%5 == 0) add_new_bird(140, 30+rnd(30), rnd({1, 0.9, 0.8}))	
+
 	elseif (game_stage == 5) then -- STAGE 5 
+		if(game_stage_has_changed) then
+			set_message("the sky rumbles", 60)
+			add_new_can(-8, 76, rnd({1.2,1.3,1.4,1.5,1.6,1.7}), 1)
+			add_new_lightningbolt(0, 0)
+			add_new_lightningbolt(120, 0)
+			game_map_pal_index = 2 
+		end 
 		game_scale_target = 1.1
+
 	elseif (game_stage == 6) then -- STAGE 6
+		if(game_stage_has_changed) set_message("stage 6", 60)
 		if(time()%5 == 0) add_new_can(-8, 76, rnd({1.2,1.3,1.4,1.5,1.6,1.7}), 1)
 	elseif (game_stage == 7) then -- STAGE 7
+		if(game_stage_has_changed) set_message("stage 7", 60)
 		if(time()%5 == 0) add_new_can(-8, 76, rnd({1.2,1.3,1.4,1.5,1.6,1.7}), 1)
 		if(time()%6 == 0) add_new_bird(140, 30+rnd(30), 1.2)
-	elseif (game_stage >= 8) then -- STAGE 8
+	elseif (game_stage == 8) then -- STAGE 8
+		if(game_stage_has_changed) set_message("stage 8", 60)
 		if(time()%3 == 0) add_new_can(-8, 76, rnd({1.2,1.3,1.4,1.5,1.6,1.7}), 1)
 		if(time()%5 == 0) add_new_bird(140, 30+rnd(30), 1.2)
+	elseif (game_stage >= 9) then
+		if(game_stage_has_changed and game_stage == 9) set_message("nothing beyond this point", 60)
+		if(time()%3 == 0) add_new_can(-8, 76, rnd({0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2}), 3)
+		if(time()%5 == 0) add_new_bird(140, 30+rnd(30), 1.2)
+		game_map_pal_index = 3 
+	end 
+end
+
+function set_message(_msg, _life)
+	game_message = _msg
+	game_message_life = _life
+end
+
+function game_message_update()
+	if(game_message_life > 0) then
+		game_message_life -= 1
+	else
+		game_message = ""
 	end
 end

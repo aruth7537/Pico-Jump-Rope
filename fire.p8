@@ -6,7 +6,7 @@ function fire_init()
     fire = {}
 end
 
-function add_new_fire(_x, _y)
+function add_new_fire(_x, _y, _life)
     add(fire,{
         x=_x,
         y=_y,
@@ -20,6 +20,7 @@ function add_new_fire(_x, _y)
         anim_index = 1,
         anim_timer = 0,
         anim_speed = 3,
+        life = _life or 0,
 
         draw=function(self)
             spr(self.animation[self.anim_index], self.x, self.y) 
@@ -39,6 +40,14 @@ function add_new_fire(_x, _y)
                     player_hit()
                 end
             end
+
+            -- Kill after life is up 
+            if(self.life != 0) then
+                self.life -= 1
+                if(self.life == 0) then
+                    del(fire,self)
+                end
+            end 
         end,
     })
 end
