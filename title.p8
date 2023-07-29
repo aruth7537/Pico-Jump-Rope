@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 41
 __lua__
 function title_init()
-    menu = {"play","unlockables","highscores"}
+    menu = {"play","peepee!","poopoo!"}
     menu_index = 1
     author_string = "a game by avery ruth"
     author_string_x = 20
@@ -18,6 +18,9 @@ function title_update()
     menu_index = clamp(menu_index, 1, 3)
 
     if(btnp(4) and menu_index == 1) goto_game()
+    if(btnp(4) and menu_index == 2) author_string = "poopoo!"
+    if(btnp(4) and menu_index == 3) author_string = "peepee!"
+    if(btnp(4)) author_string_timer = author_string_start_timer-10
 end
 
 function title_draw()

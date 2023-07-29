@@ -30,6 +30,8 @@ function game_init()
 	game_stage_ui_x = 92
 	game_stage_ui_y = 7
 	game_stage_has_changed = false
+	game_coins = 0
+	game_coins_to_next_stage = 4
 	game_scale = 1
 	game_scale_target = 1
 	game_script = nil
@@ -62,6 +64,7 @@ function game_init()
 	game_over_gravity = 0.25
 	game_over_vsp = 0
 	game_over_floor = 54
+	game_over_continue = false
 
 	-- Timer Variables 
 	timer = 15.38
@@ -169,11 +172,6 @@ function game_update()
 	-- Game over step event
 	step_game_over()
 	
-    -- Debug Event
-	if (btnp(5)) then
-		reset_data()
-		_init()
-	end
 	--if (btnp(3)) game_scale -= 0.2
 end
 
@@ -182,8 +180,14 @@ end
 ------------
 
 function game_draw()
+
+
+
     -- Clear the screen
     cls()
+
+	-- Debug 
+	debug_print()
 
 	--- Color the Map
     pal(game_map_pal[game_map_pal_index], 0)
@@ -316,33 +320,44 @@ end
 -- Increase Score
 function increase_score(_value)
 	-- Set the score amount 
-	value = _value or 1
+	local value = _value or 1
+	game_score += value
 
 	-- Increase the score incrementally that way we can check for each stage
-	for i = 1, value do
-		game_score += 1
-		--game_data_check()
-		if(game_score >=  game_score_end) then
-			increase_stage()
-		end
+	-- for i = 1, value do
+	-- 	game_score += 1
+	-- 	--game_data_check()
+	-- 	if(game_score >=  game_score_end) then
+	-- 		increase_stage()
+	-- 	end
 
-		-- if(game_stage == 1) then
-		-- 	if(game_score%25 == 0) game_scale_target = 1.2
-		-- elseif(game_stage == 2) then
-		-- 	if(game_score%50 == 0) game_scale_target = 1.4
-		-- elseif(game_stage == 3) then
-		-- 	if(game_score%75 == 0) game_scale_target = 1.6
-		-- elseif(game_stage >= 4) then
-		-- 	if(game_score%25 == 0) game_scale_target += 0.2
-		-- end
+	-- 	-- if(game_stage == 1) then
+	-- 	-- 	if(game_score%25 == 0) game_scale_target = 1.2
+	-- 	-- elseif(game_stage == 2) then
+	-- 	-- 	if(game_score%50 == 0) game_scale_target = 1.4
+	-- 	-- elseif(game_stage == 3) then
+	-- 	-- 	if(game_score%75 == 0) game_scale_target = 1.6
+	-- 	-- elseif(game_stage >= 4) then
+	-- 	-- 	if(game_score%25 == 0) game_scale_target += 0.2
+	-- 	-- end
+	-- end
+end
+
+function increase_coin(_value)
+	local value = _value or 1
+	game_coins += value
+	if(game_coins >= game_coins_to_next_stage) then
+		increase_stage() 
 	end
 end
 
 function increase_stage()
 	game_stage += 1
-	game_score_new_zero = game_score
-	game_score_end += min(game_score_end+50, game_score_end_max)--min(game_score_end*2, game_score_end_max)
-	sfx(14)
+	game_coins = 0
+	game_coins_to_next_stage = min(game_coins_to_next_stage+2, 24)
+	-- game_score_new_zero = game_score
+	-- game_score_end += min(game_score_end+50, game_score_end_max)--min(game_score_end*2, game_score_end_max)
+	sfx(14, 2)
 	game_stage_has_changed = true
 end 
 
@@ -403,3 +418,30 @@ function game_message_update()
 		game_message = ""
 	end
 end
+
+-- Game Over sub state
+
+function draw_game_over()
+	if (player_is_hit == true) then
+		spr(64, game_over_logo_x, game_over_logo_y, game_over_w, game_over_h) 
+		--if(game_over_continue) print_shadow()
+	end
+end 
+
+function step_game_over()
+	if (player_is_hit == true) then 
+		game_over_vsp += game_over_gravity
+		game_over_logo_y += game_over_vsp
+		if (game_over_logo_y > game_over_floor) then 
+			if (abs(game_over_vsp) > 1) then 
+				game_over_logo_y = game_over_floor
+				game_over_vsp = -(game_over_vsp/2)
+				sfx(3)
+			else
+				game_over_logo_y = game_over_floor
+				game_over_vsp = 0
+				game_over_continue = true
+			end
+		end
+	end 
+end 

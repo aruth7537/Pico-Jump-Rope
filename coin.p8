@@ -32,6 +32,8 @@ function add_new_coin(_x,_y)
         picked_up_x = 0,
         picked_up_y = 0,
         dist_pickup = 0,
+        coin_dest_x = 64,
+        coin_dest_y = 128,
         draw=function(self)
             if(self.is_picked_up == 0) then
                 spr(self.animation[self.anim_index], self.x, self.y) 
@@ -59,6 +61,8 @@ function add_new_coin(_x,_y)
                     sfx(17, -1, clamp((score-1)%10, 0, 9)*3, 3)
                     -- Increase Score 
                     increase_score(score)
+                    -- Increase current coin count
+                    increase_coin()
                     -- Spawn VFX 
                     spawn_score_vfx(self.x, self.y, score)
                     -- Set Double Jump
@@ -66,32 +70,37 @@ function add_new_coin(_x,_y)
 
                     -- Spawn us a new coin
                     --spawn_new_coin()
-                    add_new_coin(next_coin_x, next_coin_y)
-                    if(next_coin_x > 64) then
-                        next_coin_x = 32+rnd(32)
+
+                    if(player.x > 64) then
+                        next_coin_x = 64-rnd(32)
                         next_coin_y = 36+rnd(32)
                     else
                         next_coin_x = 64+rnd(32)
                         next_coin_y = 36+rnd(32)
                     end
 
+                    -- Add New Coin
+                    add_new_coin(next_coin_x, next_coin_y)
+
                     -- Set Variables
                     self.is_picked_up = 1
                     self.anim_index = 1
                     self.picked_up_x = self.x
                     self.picked_up_y = self.y
-                    self.dist_pickup = distance(self.picked_up_x, self.picked_up_y, game_stage_ui_x, game_stage_ui_y)
+                    self.dist_pickup = distance(self.picked_up_x, self.picked_up_y, self.coin_dest_x, self.coin_dest_y)
 
                 end 
             -- If the coin has been picked up
             elseif(self.is_picked_up == 1) then
                 -- Lerp to the location
-                local dist_current = distance(self.x , self.y, game_stage_ui_x, game_stage_ui_y)
+                local dist_current = distance(self.x , self.y, self.coin_dest_x, self.coin_dest_y)
                 local frame = flr((dist_current/self.dist_pickup)*3)+1
                 self.anim_index = frame
-                self.x = smooth_approach(self.x, game_stage_ui_x, 0.1)
-                self.y = smooth_approach(self.y, game_stage_ui_y, 0.1)
-                if(dist_current < 5) del(coins, self)
+                self.x = smooth_approach(self.x, self.coin_dest_x, 0.1)
+                self.y = smooth_approach(self.y, self.coin_dest_y, 0.1)
+                if(dist_current < 5) then
+                    del(coins, self)
+                end 
             end 
         end
     })

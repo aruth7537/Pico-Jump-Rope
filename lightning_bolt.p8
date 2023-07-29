@@ -30,7 +30,7 @@ function add_new_lightningbolt(_x, _fire_life)
             if(self.life <= 0) then
                 --remove self
                  del(lightningbolt,self)
-                 sfx(18)
+                 sfx(18, 3)
                  add_new_fire(flr(self.x/8)*8, 72, fire_life)
                  mset(flr(self.x/8), 10, 24) 
                  game_sky_flash = false

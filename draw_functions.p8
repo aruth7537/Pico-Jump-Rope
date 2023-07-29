@@ -3,45 +3,41 @@ version 41
 __lua__
 -- Draw message
 function draw_game_message()
-	length = #game_message*4
-	print(game_message, 64-length/2, 32, 7) 
+	local length = #game_message*4
+	local draw_x = 64-length/2
+	local draw_y = 32
+	print(game_message, draw_x+1, draw_y, 1) 
+	print(game_message, draw_x-1, draw_y, 1) 
+	print(game_message, draw_x, draw_y+1, 1) 
+	print(game_message, draw_x, draw_y-1, 1) 
+	print(game_message, draw_x, draw_y, 7) 
 end
-
--- Draw game over 
-function draw_game_over()
-	if (player_is_hit == true) then
-		spr(64, game_over_logo_x, game_over_logo_y, game_over_w, game_over_h) 
-	end
-end 
 
 -- Debug Print
 function debug_print() 
 
-	print("gd_index:"..game_data_index, 0, 8)
-	print("gd_length:"..game_data_length,0, 16)
-	print("gd_next:"..game_data_next,0,24)
+	print("playerx:"..player.x, 64, 8)
+	print("playery:"..player.y, 64, 16)
+	-- print("gd_next:"..game_data_next,0,24)
 	
-	print("dist sign:"..dist_sign, 64, 0)
-	print("last sign:"..dist_last_sign, 64, 8)
-	print(player_is_hit, 64, 16) 
-	print("player feet:"..player_bottom, 64, 24)
-	print("floor:"..floor_y, 64, 32)
+	-- print("dist sign:"..dist_sign, 64, 0)
+	-- print("last sign:"..dist_last_sign, 64, 8)
+	-- print(player_is_hit, 64, 16) 
+	-- print("player feet:"..player_bottom, 64, 24)
+	-- print("floor:"..floor_y, 64, 32)
 end
 
 function draw_hud()
-	print("score:"..game_score.."0", 1, 1, 1) 
-	print("score:"..game_score.."0", 0, 0, 7) 
-	
-
-	print("lives:", 0, 8, 7)
+	print_shadow("score:"..game_score.."0", 0, 0, 7, 1)
+	print_shadow("lives:", 0, 8, 7, 1)
 
 	for i=1,game_lives do 
 		sspr(9,0,6,4, 16+i*8, 9)
 	end
 
-	draw_stage_hud(8, 120, 112)
-	print("stage:"..game_stage, 50,112) 
-	--print("con score:"..player_consecutive_score*10, 0,16, 7)
+	--draw_stage_hud(8, 120, 112)
+	draw_stage_hud(64, 112)
+	print_shadow("stage:"..game_stage, 50, 105, 7, 1)
 
 	
 end 
@@ -65,12 +61,28 @@ end
 -- 	end
 -- end 
 
-function draw_stage_hud(_x, _y, _w)
-	local draw_w = clamp(((game_score-game_score_new_zero)/(game_score_end-game_score_new_zero)) * _w,  0, _w)
+function draw_stage_hud(_x, _y)
+	-- local draw_w = clamp(((game_score-game_score_new_zero)/(game_score_end-game_score_new_zero)) * _w,  0, _w)
 
-	sspr(88,8, 1,3, _x, _y+1, draw_w, 3)
+	-- sspr(88,8, 1,3, _x, _y+1, draw_w, 3)
 
-	sspr(104, 8, 1, 6, _x-1, _y)
-	sspr(105, 8, 6, 6, _x, _y, _w, 6)
-	sspr(112, 8, 2, 6, _x+_w, _y)
+	-- sspr(104, 8, 1, 6, _x-1, _y)
+	-- sspr(105, 8, 6, 6, _x, _y, _w, 6)
+	-- sspr(112, 8, 2, 6, _x+_w, _y)
+	local draw_x = _x - ((game_coins_to_next_stage/2) * 8) / 2 
+	local draw_y = _y 
+	local rows = 2
+	local sprite = 11 
+
+	for i = 0, game_coins_to_next_stage-1 do
+		sprite = 11 
+		if (i <= game_coins-1) sprite = 32
+		spr(sprite, draw_x + flr(i/rows)*8, draw_y + (8*(i%rows)))
+	end
+
+end 
+
+function print_shadow(_str, _x , _y, _col, _col2)
+	print(_str, _x+1,_y+1,_col2)
+	print(_str, _x, _y, _col)
 end 
