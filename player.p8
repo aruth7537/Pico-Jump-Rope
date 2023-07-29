@@ -55,6 +55,8 @@ function player_init()
 		{16},
 		{18,19,20,21}
 	}
+
+    player_noescape_message = false
 end 
 
 function step_player()	
@@ -104,9 +106,6 @@ function step_player()
             if(player_vspd < 0) player_vspd *= 0.5
         end
 
-        -- Double Jump Sparkles
-        --if (game_time % 2 == 0 and player_double_jump == true) add_new_vfx(player.x+rnd(player.bw), player.y+rnd(player.bh), 0, 0, 0, 0, {89,87,88,23}, 0, rnd(5,9),0,1)
-
         --Double Jump 
         if(btn(4) == true and jump_released == true and player_double_jump == true and player_bottom < floor_y-4) then
             player_vspd = -player_jumpspeed
@@ -151,6 +150,17 @@ function step_player()
         player.y += player_vspd
         player.x += player_hspd
     end
+
+    if(player.x > 128) then
+        player.x -= 128
+        play_noescape_message()
+    end 
+
+    if(player.x < 0) then
+        player.x += 128
+        play_noescape_message()
+    end 
+
     -- Update where the bottom of the player is
     player_bottom = player.y + player.bh
     
@@ -167,11 +177,17 @@ function step_player()
         player_vspd = 0
         player_consecutive_jump_timer = 0
         player_consecutive_score = 0
-        --player_double_jump = false
-        --player_double_jump_flash = false
         jump_released = false 
     end 
 end
+
+function play_noescape_message()
+    if(player_noescape_message == false )then
+        set_message("there's no escape", 60)
+        player_noescape_message = true 
+    end 
+end 
+
 
 
 -- Draw player function 
@@ -246,7 +262,6 @@ function player_hit()
     else
         player_is_hit = true
         dset(0, data_deaths)
-        set_high_score(game_score)
         sfx(2)
         game_scale = 0
         game_scale_target = 0

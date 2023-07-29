@@ -7,7 +7,6 @@ function game_init()
 	data_flag = { 0, 0, 0, 0, 0, 0, 0, 0} 
 	data_high_score = 0
 
-	data_load()
 	coin_init()
 	cans_init()
 	birds_init()
@@ -180,14 +179,11 @@ end
 ------------
 
 function game_draw()
-
-
-
     -- Clear the screen
     cls()
 
 	-- Debug 
-	debug_print()
+	--debug_print()
 
 	--- Color the Map
     pal(game_map_pal[game_map_pal_index], 0)
@@ -216,11 +212,6 @@ function game_draw()
     for c in all (coins) do
         c:draw()
     end
-
-    -- Draw Next Coin 
-    -- spr(next_coin_anim[next_coin_anim_index],next_coin_x+1,next_coin_y+1)
-    -- if(game_time % next_coin_anim_speed == 0) next_coin_anim_index += 1
-    -- if(next_coin_anim_index > count(next_coin_anim)) next_coin_anim_index = 1
 
     -- Draw  birds
     for b in all (birds) do
@@ -322,27 +313,9 @@ function increase_score(_value)
 	-- Set the score amount 
 	local value = _value or 1
 	game_score += value
-
-	-- Increase the score incrementally that way we can check for each stage
-	-- for i = 1, value do
-	-- 	game_score += 1
-	-- 	--game_data_check()
-	-- 	if(game_score >=  game_score_end) then
-	-- 		increase_stage()
-	-- 	end
-
-	-- 	-- if(game_stage == 1) then
-	-- 	-- 	if(game_score%25 == 0) game_scale_target = 1.2
-	-- 	-- elseif(game_stage == 2) then
-	-- 	-- 	if(game_score%50 == 0) game_scale_target = 1.4
-	-- 	-- elseif(game_stage == 3) then
-	-- 	-- 	if(game_score%75 == 0) game_scale_target = 1.6
-	-- 	-- elseif(game_stage >= 4) then
-	-- 	-- 	if(game_score%25 == 0) game_scale_target += 0.2
-	-- 	-- end
-	-- end
 end
 
+-- Increase Coins
 function increase_coin(_value)
 	local value = _value or 1
 	game_coins += value
@@ -351,16 +324,16 @@ function increase_coin(_value)
 	end
 end
 
+-- Increase Stage
 function increase_stage()
 	game_stage += 1
 	game_coins = 0
 	game_coins_to_next_stage = min(game_coins_to_next_stage+2, 24)
-	-- game_score_new_zero = game_score
-	-- game_score_end += min(game_score_end+50, game_score_end_max)--min(game_score_end*2, game_score_end_max)
 	sfx(14, 2)
 	game_stage_has_changed = true
 end 
 
+-- Spawn things
 function spawn_things()
 	if(game_stage == 1) then      -- STAGE 1 
 		-- Nothing
@@ -399,7 +372,8 @@ function spawn_things()
 		if(time()%3 == 0) add_new_can(-8, 76, rnd({1.2,1.3,1.4,1.5,1.6,1.7}), 1)
 		if(time()%5 == 0) add_new_bird(140, 30+rnd(30), 1.2)
 	elseif (game_stage >= 9) then
-		if(game_stage_has_changed and game_stage == 9) set_message("nothing beyond this point", 60)
+		if(game_stage_has_changed and game_stage == 9) set_message("the sky darkens", 60)
+		if(game_stage_has_changed and game_stage > 9) set_message("an endless challenge!", 60)
 		if(time()%3 == 0) add_new_can(-8, 76, rnd({0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2}), 3)
 		if(time()%5 == 0) add_new_bird(140, 30+rnd(30), 1.2)
 		game_map_pal_index = 3 
@@ -419,15 +393,9 @@ function game_message_update()
 	end
 end
 
+
+
 -- Game Over sub state
-
-function draw_game_over()
-	if (player_is_hit == true) then
-		spr(64, game_over_logo_x, game_over_logo_y, game_over_w, game_over_h) 
-		--if(game_over_continue) print_shadow()
-	end
-end 
-
 function step_game_over()
 	if (player_is_hit == true) then 
 		game_over_vsp += game_over_gravity
@@ -444,4 +412,11 @@ function step_game_over()
 			end
 		end
 	end 
+end 
+
+function draw_game_over()
+	if (player_is_hit == true) then
+		spr(64, game_over_logo_x, game_over_logo_y, game_over_w, game_over_h) 
+		--if(game_over_continue) print_shadow()
+	end
 end 
