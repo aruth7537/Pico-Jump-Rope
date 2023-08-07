@@ -17,7 +17,10 @@ function highscore_init()
 end
 
 function highscore_update()
-
+    if(btnp(4)) then
+        save_highscores()
+        goto_title()
+    end
 end 
 
 function highscore_draw()
@@ -61,7 +64,17 @@ end
 
 function set_highscore(_pos, _score, _v1, _v2, _v3)
     add(highscore_table, {{_v1, _v2, _v3}, _score}, _pos)
-    del(highscore_table)
+    del(highscore_table, highscore_table[9])
+end 
+
+function is_highscore(_score) -- Returns index or -1 if no highscore
+    for i = 1, 8 do
+        if(_score>=highscore_table[i][2]) then
+            return i
+            break;
+        end 
+    end 
+    return -1
 end 
 
 function save_highscores()

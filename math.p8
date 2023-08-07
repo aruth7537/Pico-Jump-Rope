@@ -53,7 +53,7 @@ function smooth_approach(c, t, a)
 	 -- view_yview = smooth_approach(view_yview, y-view_hview/2, 0.1);
 	 
 	local diff = t-c
-	if (abs(diff) < 0.05) then
+	if (abs(diff) < 0.01) then
 	   return t
 	else 
 	   return c+sgn(diff)*abs(diff)*a

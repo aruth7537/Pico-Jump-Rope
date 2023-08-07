@@ -18,7 +18,7 @@ function title_update()
     menu_index = clamp(menu_index, 1, 3)
 
     if(btnp(4) and menu_index == 1) goto_game()
-    if(btnp(4) and menu_index == 2) sfx(12)
+    if(btnp(4) and menu_index == 2) goto_highscore()
     if(btnp(4) and menu_index == 3) sfx(12)
 end
 
@@ -48,9 +48,3 @@ function title_draw()
         print(menu[i], 60, 70+i*8, col)
     end
 end
-
-function goto_game()
-    game_init()
-    update_state = game_update
-    draw_state = game_draw   
-end 

@@ -398,6 +398,15 @@ end
 -- Game Over sub state
 function step_game_over()
 	if (player_is_hit == true) then 
+
+		if(btnp(4)) then
+			game_init()
+		end 
+
+		if(btnp(5)) then
+			goto_title()
+		end 
+		
 		game_over_vsp += game_over_gravity
 		game_over_logo_y += game_over_vsp
 		if (game_over_logo_y > game_over_floor) then 
@@ -418,5 +427,8 @@ function draw_game_over()
 	if (player_is_hit == true) then
 		spr(64, game_over_logo_x, game_over_logo_y, game_over_w, game_over_h) 
 		--if(game_over_continue) print_shadow()
+
+		print_shadow("🅾️ retry  ❎ title", 32, 72, 7, 1)
+
 	end
 end 
