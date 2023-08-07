@@ -24,6 +24,8 @@ function game_init()
 	game_score_end = 100
 	game_score_end_max = 400
 	game_score_new_zero = 0
+	game_has_highscore = false
+	game_has_highscore_index = 8
 	game_lives = 3
 	game_stage = 1
 	game_stage_ui_x = 92
@@ -184,6 +186,7 @@ function game_draw()
 
 	-- Debug 
 	--debug_print()
+	print(is_highscore(game_score), 64, 0)
 
 	--- Color the Map
     pal(game_map_pal[game_map_pal_index], 0)
@@ -393,20 +396,24 @@ function game_message_update()
 	end
 end
 
-
-
 -- Game Over sub state
 function step_game_over()
 	if (player_is_hit == true) then 
 
-		if(btnp(4)) then
-			game_init()
-		end 
+		if(game_has_highscore) then
+			if(btnp(4) or btnp(5)) then
+				goto_score_entry(game_score, game_has_highscore_index)
+			end 
+		else
+			if(btnp(4)) then
+				game_init()
+			end 
 
-		if(btnp(5)) then
-			goto_title()
-		end 
-		
+			if(btnp(5)) then
+				goto_title()
+			end 
+		end
+
 		game_over_vsp += game_over_gravity
 		game_over_logo_y += game_over_vsp
 		if (game_over_logo_y > game_over_floor) then 
@@ -427,8 +434,11 @@ function draw_game_over()
 	if (player_is_hit == true) then
 		spr(64, game_over_logo_x, game_over_logo_y, game_over_w, game_over_h) 
 		--if(game_over_continue) print_shadow()
-
-		print_shadow("🅾️ retry  ❎ title", 32, 72, 7, 1)
+		if(game_has_highscore) then
+			print_shadow("new highscore!", 38, 72, 7, 1)
+		else
+			print_shadow("🅾️ retry  ❎ title", 32, 72, 7, 1)
+		end
 
 	end
 end 

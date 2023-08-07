@@ -265,6 +265,10 @@ function player_hit()
         sfx(2)
         game_scale = 0
         game_scale_target = 0
+        if(is_highscore(game_score) != -1) then
+            game_has_highscore = true
+            game_has_highscore_index = is_highscore(game_score)
+        end 
     end 
 end 
 

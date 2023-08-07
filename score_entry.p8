@@ -16,11 +16,11 @@ function score_entry_update()
 
     if(btnp(0)) then
         wheel_index -= 1
-        sfx(7)
+        sfx(15)
     end
     if(btnp(1)) then
         wheel_index += 1
-        sfx(7)
+        sfx(15)
     end
     if(wheel_index>39) wheel_index = 1
     if(wheel_index<1) wheel_index = 39
@@ -50,9 +50,7 @@ end
 function score_entry_draw()
     cls()
     draw_score_entry(64,64)
-    print(highscore_table[1][2])
-    print(highscore_characters[16])
-    print(tostr(count(highscore_table)))
+    print(tostr(wheel_index))
 end
 
 function draw_score_entry(_x, _y)

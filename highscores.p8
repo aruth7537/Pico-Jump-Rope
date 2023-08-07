@@ -68,13 +68,13 @@ function set_highscore(_pos, _score, _v1, _v2, _v3)
 end 
 
 function is_highscore(_score) -- Returns index or -1 if no highscore
+    local val = -1
     for i = 1, 8 do
-        if(_score>=highscore_table[i][2]) then
-            return i
-            break;
+        if(_score>=highscore_table[9-i][2]) then
+            val =  9-i
         end 
     end 
-    return -1
+    return val
 end 
 
 function save_highscores()

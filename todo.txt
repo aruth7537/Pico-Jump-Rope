@@ -1,0 +1,4 @@
+add animations to highscore and score entry
+add highscore in game
+add secrets 
+polish here and there

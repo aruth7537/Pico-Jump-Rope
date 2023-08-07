@@ -13,8 +13,8 @@ function goto_title()
     draw_state = title_draw
 end 
 
-function goto_score_entry() 
-    score_entry_init()
+function goto_score_entry(_score, _index) 
+    score_entry_init(_score, _index)
     update_state = score_entry_update
     draw_state = score_entry_draw
 end
