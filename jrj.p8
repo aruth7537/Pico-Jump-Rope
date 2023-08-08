@@ -6,6 +6,7 @@ __lua__
 #include title.p8
 #include highscores.p8
 #include score_entry.p8
+#include debug.p8
 
 #include draw_functions.p8
 #include math.p8
@@ -29,10 +30,12 @@ update_state = title_update --highscore_update
 draw_state = title_draw --highscore_draw
 
 function _init()
+	printh("JUMP ROPE JIM")
 	game_init()
 	title_init() 
 	highscore_init()
 	score_entry_init(500, 8)
+	debug_init()
 end
 
 -- Function to control pixel gradient 

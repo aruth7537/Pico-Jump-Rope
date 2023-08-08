@@ -104,8 +104,12 @@ function load_highscores()
     else
         for i=1, 8 do
             local score = dget(i+7)
+            printh(score)
             local name_data = dget(i-1)
             local name_table = decompress40(name_data)
+            printh(name_table[1])
+            printh(name_table[2])
+            printh(name_table[3])
             set_highscore(i, score, name_table[1], name_table[2], name_table[3])
         end 
     end 

@@ -67,17 +67,30 @@ end
 
 -- Compress Numbers (base 40) Compress 3 values under 40 into one 16 bit number
 function compress40(_v1, _v2, _v3)
-    local x1 = _v1 
-    local x2 = _v2 * 40
-    local x3 = _v3 * 1600
-    return x1 + x2 + x3
+    -- local x1 = _v1 
+    -- local x2 = _v2 * 40
+    -- local x3 = _v3 * 1600
+    -- return x1 + x2 + x3
+    local data = 0
+    data = data | (_v1 << 6)
+    data = data | _v2 
+    data = data | (_v3 >> 6)
+    return data
 end
 
 -- Decrompress Numbers (base 40) into 3 seperate values
 function decompress40(_data)
+    -- local data = _data
+    -- local v1 = data % 40 
+    -- local v2 = ((data - v1) / 40) % 40 
+    -- local v3 = (((data - v1) / 40) - v2) / 40 
+    -- return {v1, v2, v3}
+    local mask1 = 0b0000111111000000.0000000000000000
+    local mask2 = 0b0000000000111111.0000000000000000
+    local mask3 = 0b0000000000000000.1111110000000000
     local data = _data
-    local v1 = data % 40 
-    local v2 = ((data - v1) / 40) % 40 
-    local v3 = (((data - v1) / 40) - v2) / 40 
+    local v1 = (data & mask1) >> 6
+    local v2 = data & mask2
+    local v3 = (data & mask3) << 6
     return {v1, v2, v3}
 end 

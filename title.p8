@@ -19,7 +19,7 @@ function title_update()
 
     if(btnp(4) and menu_index == 1) goto_game()
     if(btnp(4) and menu_index == 2) goto_highscore()
-    if(btnp(4) and menu_index == 3) sfx(12)
+    if(btnp(4) and menu_index == 3) goto_debug()
 end
 
 function title_draw()

@@ -23,3 +23,8 @@ function goto_highscore()
     update_state = highscore_update
     draw_state = highscore_draw
 end 
+
+function goto_debug()
+    update_state = debug_update
+    draw_state = debug_draw
+end 
