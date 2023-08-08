@@ -322,6 +322,7 @@ end
 function increase_coin(_value)
 	local value = _value or 1
 	game_coins += value
+	total_coins_collected+=1
 	if(game_coins >= game_coins_to_next_stage) then
 		increase_stage() 
 	end
@@ -406,10 +407,12 @@ function step_game_over()
 			end 
 		else
 			if(btnp(4)) then
+				save_highscores()
 				game_init()
 			end 
 
 			if(btnp(5)) then
+				save_highscores()
 				goto_title()
 			end 
 		end

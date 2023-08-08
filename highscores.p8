@@ -18,7 +18,6 @@ end
 
 function highscore_update()
     if(btnp(4)) then
-        save_highscores()
         goto_title()
     end
 end 
@@ -48,7 +47,7 @@ function highscore_draw()
     end 
 
     print("coins collected: "..total_coins_collected, hs_x, hs_y+92)
-    print("total deaths: "..total_coins_collected, hs_x+12, hs_y+100)
+    print("total deaths: "..total_deaths, hs_x+12, hs_y+100)
 
 
     -- local v1 = highscore_table[2][1][1]
@@ -98,10 +97,12 @@ end
 function load_highscores()
 
     -- Load highscore table
-    if(dget(7) == 0) then 
+    if(dget(1) == 0b0000000000000000.0000000000000000) then 
+        printh("No Save Data, loading defaults!")
         highscore_table = highscore_table_default
         save_highscores()
     else
+        printh("Save Data found. Loading!")
         for i=1, 8 do
             local score = dget(i+7)
             printh(score)

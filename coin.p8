@@ -90,7 +90,7 @@ function add_new_coin(_x,_y)
                     self.dist_pickup = distance(self.picked_up_x, self.picked_up_y, self.coin_dest_x, self.coin_dest_y)
 
                 end 
-            -- If the coin has been picked up
+            -- If the coin has been picked up and is now an effect
             elseif(self.is_picked_up == 1) then
                 -- Lerp to the location
                 local dist_current = distance(self.x , self.y, self.coin_dest_x, self.coin_dest_y)

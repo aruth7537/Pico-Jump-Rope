@@ -65,7 +65,7 @@ function distance(_x_start, _y_start, _x_end, _y_end)
     return sqrt((_x_end - _x_start)^2 + (_y_end - _y_start)^2)
 end
 
--- Compress Numbers (base 40) Compress 3 values under 40 into one 16 bit number
+-- Compress 3 values (base 40) into one 32 bit value Returns a 16.16 value
 function compress40(_v1, _v2, _v3)
     -- local x1 = _v1 
     -- local x2 = _v2 * 40
@@ -78,7 +78,7 @@ function compress40(_v1, _v2, _v3)
     return data
 end
 
--- Decrompress Numbers (base 40) into 3 seperate values
+-- Decrompress data into 3 seperate values (6 bit) Returns Table 
 function decompress40(_data)
     -- local data = _data
     -- local v1 = data % 40 

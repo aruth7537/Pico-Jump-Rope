@@ -6,7 +6,6 @@ __lua__
 #include title.p8
 #include highscores.p8
 #include score_entry.p8
-#include debug.p8
 
 #include draw_functions.p8
 #include math.p8
@@ -35,7 +34,7 @@ function _init()
 	title_init() 
 	highscore_init()
 	score_entry_init(500, 8)
-	debug_init()
+	--debug_init()
 end
 
 -- Function to control pixel gradient 

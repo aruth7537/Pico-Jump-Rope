@@ -261,7 +261,7 @@ function player_hit()
         sfx(12)
     else
         player_is_hit = true
-        dset(0, data_deaths)
+        total_deaths+=1
         sfx(2)
         game_scale = 0
         game_scale_target = 0
