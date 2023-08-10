@@ -3,6 +3,7 @@ version 41
 __lua__
 
 function game_init()
+
     data_deaths = 0
 	data_flag = { 0, 0, 0, 0, 0, 0, 0, 0} 
 	data_high_score = 0
@@ -86,6 +87,11 @@ function game_init()
 	rope_hit_point = 1
 	rope_sound_played = false 
 	rope_passed_center = false
+
+	clouds_active = false
+	clouds_y = -24
+	clouds_y_target = -24
+	clouds_x = 0
 
 	dist = 0
 	dist_last = dist
@@ -190,11 +196,23 @@ function game_draw()
 
 	--- Color the Map
     pal(game_map_pal[game_map_pal_index], 0)
-	if(game_sky_flash) pal({0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},0) -- flash the sky
+	if(game_sky_flash) pal({0,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7},0) -- flash the sky
 	
 	--- Draw the map
     map(0,0,0,0,16,16)
     pal()
+
+	-- Draw Clouds
+	clouds_x-=1
+	clouds_y_target = -24
+	if(clouds_active) clouds_y_target = 0
+	clouds_y = smooth_approach(clouds_y, clouds_y_target, 0.1)
+	if(clouds_x < -8) clouds_x+=8
+	for i = 0, 18 do
+		spr(15, clouds_x+i*8, clouds_y)
+		spr(31, clouds_x+i*8, clouds_y+8)
+		spr(47, clouds_x*0.5+i*8, clouds_y+16)
+	end
 
 	-- Draw  Cans
 	for c in all (cans) do
@@ -283,12 +301,15 @@ function game_draw()
             end
 
 			if (dist_last_sign == 1) rope_passed_center = true
+			col = 8
         else
 			rope_passed_center = false
 		end
             
         -- Finally draw the pixel
         pset(i + rope_start_x, d_y_capped, col)
+		--pset(i + rope_start_x, d_y_capped-1, col_gradient[col_index-1])
+		--pset(i + rope_start_x, d_y_capped+1, 1)
     end
     
     -- Draw the player in front of the rope 
@@ -376,6 +397,7 @@ function spawn_things()
 		if(time()%3 == 0) add_new_can(-8, 76, rnd({1.2,1.3,1.4,1.5,1.6,1.7}), 1)
 		if(time()%5 == 0) add_new_bird(140, 30+rnd(30), 1.2)
 	elseif (game_stage >= 9) then
+		clouds_active=true
 		if(game_stage_has_changed and game_stage == 9) set_message("the sky darkens", 60)
 		if(game_stage_has_changed and game_stage > 9) set_message("an endless challenge!", 60)
 		if(time()%3 == 0) add_new_can(-8, 76, rnd({0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2}), 3)
