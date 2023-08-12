@@ -104,6 +104,10 @@ function game_init()
 	col_index = 1
 	col = 7
 	alt_color = false
+
+	-- Camera
+	camera_intensity = 0
+	camera_shake_control = 5
 end
 
 ------------
@@ -192,7 +196,7 @@ function game_draw()
 
 	-- Debug 
 	--debug_print()
-	print(is_highscore(game_score), 64, 0)
+	--print(is_highscore(game_score), 64, 0)
 
 	--- Color the Map
     pal(game_map_pal[game_map_pal_index], 0)
@@ -466,4 +470,13 @@ function draw_game_over()
 		end
 
 	end
+end 
+
+function camera_shake()
+	local shake_x=rnd(camera_intensity) - (camera_intensity / 2)
+	local shake_y=rnd(camera_intensity) - (camera_intensity / 2)
+
+	camera(shake_x, shake_y)
+
+	
 end 
