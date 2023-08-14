@@ -31,6 +31,7 @@ function add_new_lightningbolt(_x, _fire_life)
                 --remove self
                  del(lightningbolt,self)
                  sfx(18, 3)
+                 camera_intensity += camera_shake_control
                  add_new_fire(flr(self.x/8)*8, 72, fire_life)
                  mset(flr(self.x/8), 10, 24) 
                  game_sky_flash = false

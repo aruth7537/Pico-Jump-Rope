@@ -16,6 +16,10 @@ function game_init()
 	lightningbolt_init()
 	fire_init()
 	add_new_can(32, 76, 1, 1)
+	add_new_coin(80,36)
+    add_new_coin(40,36)
+	--add_new_coin(64,25,true)
+
 	
 	game_message = ""
 	game_message_life = 0
@@ -104,10 +108,6 @@ function game_init()
 	col_index = 1
 	col = 7
 	alt_color = false
-
-	-- Camera
-	camera_intensity = 0
-	camera_shake_control = 5
 end
 
 ------------
@@ -197,14 +197,6 @@ function game_draw()
 	-- Debug 
 	--debug_print()
 	--print(is_highscore(game_score), 64, 0)
-
-	--- Color the Map
-    pal(game_map_pal[game_map_pal_index], 0)
-	if(game_sky_flash) pal({0,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7},0) -- flash the sky
-	
-	--- Draw the map
-    map(0,0,0,0,16,16)
-    pal()
 
 	-- Draw Clouds
 	clouds_x-=1
@@ -321,6 +313,17 @@ function game_draw()
         draw_player()
         draw_game_over()
     end
+
+	--- Color the Map
+	pal(game_map_pal[game_map_pal_index], 0)
+	if(game_sky_flash) pal({0,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7},0) -- flash the sky
+	
+	--- Draw the map
+	map(0,0,0,0,16,16)
+	pal()
+
+	-- Reset Camera shake before hud is drawn
+	camera()
     
     -- Draw score
     draw_hud()
@@ -402,6 +405,7 @@ function spawn_things()
 		if(time()%5 == 0) add_new_bird(140, 30+rnd(30), 1.2)
 	elseif (game_stage >= 9) then
 		clouds_active=true
+		add_new_vfx(rnd(140), -8, -2, 5, 0.1, 0, {45}, 15, 1)
 		if(game_stage_has_changed and game_stage == 9) set_message("the sky darkens", 60)
 		if(game_stage_has_changed and game_stage > 9) set_message("an endless challenge!", 60)
 		if(time()%3 == 0) add_new_can(-8, 76, rnd({0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2}), 3)
@@ -470,13 +474,4 @@ function draw_game_over()
 		end
 
 	end
-end 
-
-function camera_shake()
-	local shake_x=rnd(camera_intensity) - (camera_intensity / 2)
-	local shake_y=rnd(camera_intensity) - (camera_intensity / 2)
-
-	camera(shake_x, shake_y)
-
-	
 end 

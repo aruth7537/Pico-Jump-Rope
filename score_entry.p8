@@ -35,6 +35,7 @@ function score_entry_update()
             -- Finish entry
             score_entry_index+=1
             sfx(16)
+            camera_intensity += 1
         end 
     end 
 

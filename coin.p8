@@ -6,8 +6,7 @@ function coin_init()
     coins = {}
     -- Coin Variables
 	coin_sounds = {11,17,18,19,20}
-    add_new_coin(80,36)
-    add_new_coin(40,36)
+
     next_coin_x = 32+rnd(32)
     next_coin_y = 36+rnd(32)
     next_coin_anim = {49,50}
@@ -15,7 +14,7 @@ function coin_init()
     next_coin_anim_speed = 5
 end
 
-function add_new_coin(_x,_y)
+function add_new_coin( _x, _y, _is_extra_life)
     add(coins, {
         x=_x,
         y=_y,
@@ -34,11 +33,16 @@ function add_new_coin(_x,_y)
         dist_pickup = 0,
         coin_dest_x = 64,
         coin_dest_y = 128,
+        is_extra_life = _is_extra_life or false,
         draw=function(self)
-            if(self.is_picked_up == 0) then
-                spr(self.animation[self.anim_index], self.x, self.y) 
-            elseif(self.is_picked_up == 1) then
-                spr(self.animation2[self.anim_index], self.x, self.y)
+            if(self.is_extra_life) then
+                sspr(88, 16, 16, 8, self.x-4, self.y)
+            else
+                if(self.is_picked_up == 0) then
+                    spr(self.animation[self.anim_index], self.x, self.y) 
+                elseif(self.is_picked_up == 1) then
+                    spr(self.animation2[self.anim_index], self.x, self.y)
+                end
             end
             --print(self.anim_index, self.x+8, self.y+8)
         end,
@@ -54,41 +58,47 @@ function add_new_coin(_x,_y)
                 end
                 -- Collision with player
                 if(overlap(player, self)) then 
-                    player_consecutive_score += 1
-                    -- Incorporate the number of jumps taken minus 1 so we don't count the first jump
-                    local score = player_consecutive_score --+ clamp(player_consecutive_jumps-1, 0, 2)
-                    -- Play coin pickup 
-                    sfx(17, -1, clamp((score-1)%10, 0, 9)*3, 3)
-                    -- Increase Score 
-                    increase_score(score)
-                    -- Increase current coin count
-                    increase_coin()
-                    -- Spawn VFX 
-                    spawn_score_vfx(self.x, self.y, score)
-                    -- Set Double Jump
-                    player_double_jump = true
 
-                    -- Spawn us a new coin
-                    --spawn_new_coin()
-
-                    if(player.x > 64) then
-                        next_coin_x = 64-rnd(32)
-                        next_coin_y = 36+rnd(32)
+                    if(self.is_extra_life) then
+                        game_lives+=1
+                        sfx(20)
+                        del(coins, self)
                     else
-                        next_coin_x = 64+rnd(32)
-                        next_coin_y = 36+rnd(32)
+                        player_consecutive_score += 1
+                        -- Incorporate the number of jumps taken minus 1 so we don't count the first jump
+                        local score = player_consecutive_score --+ clamp(player_consecutive_jumps-1, 0, 2)
+                        -- Play coin pickup 
+                        sfx(17, -1, clamp((score-1)%10, 0, 9)*3, 3)
+                        -- Increase Score 
+                        increase_score(score)
+                        -- Increase current coin count
+                        increase_coin()
+                        -- Spawn VFX 
+                        spawn_score_vfx(self.x, self.y, score)
+                        -- Set Double Jump
+                        player_double_jump = true
+
+                        -- Spawn us a new coin
+                        --spawn_new_coin()
+
+                        if(player.x > 64) then
+                            next_coin_x = 64-rnd(32)
+                            next_coin_y = 36+rnd(32)
+                        else
+                            next_coin_x = 64+rnd(32)
+                            next_coin_y = 36+rnd(32)
+                        end
+
+                        -- Add New Coin
+                        add_new_coin(next_coin_x, next_coin_y)
+
+                        -- Set Variables
+                        self.is_picked_up = 1
+                        self.anim_index = 1
+                        self.picked_up_x = self.x
+                        self.picked_up_y = self.y
+                        self.dist_pickup = distance(self.picked_up_x, self.picked_up_y, self.coin_dest_x, self.coin_dest_y)
                     end
-
-                    -- Add New Coin
-                    add_new_coin(next_coin_x, next_coin_y)
-
-                    -- Set Variables
-                    self.is_picked_up = 1
-                    self.anim_index = 1
-                    self.picked_up_x = self.x
-                    self.picked_up_y = self.y
-                    self.dist_pickup = distance(self.picked_up_x, self.picked_up_y, self.coin_dest_x, self.coin_dest_y)
-
                 end 
             -- If the coin has been picked up and is now an effect
             elseif(self.is_picked_up == 1) then

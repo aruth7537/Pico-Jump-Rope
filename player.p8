@@ -112,6 +112,7 @@ function step_player()
             jump_released = false
             player_double_jump = false
             player_consecutive_jumps = 3
+            player_jump_anim_index = clamp(player_consecutive_jumps, 1, 3)
             sfx(13)
             add_new_vfx(player.x+2, player.y+player.bh-1, 1, 0, -0.01, 0.02, {84,85}, 0, 10)
             add_new_vfx(player.x+2, player.y+player.bh-1, -1, 0, -0.01, 0.02, {84,85}, 0, 10)
@@ -230,7 +231,7 @@ function draw_player()
         player_spr = player_jump_animations[player_jump_anim_index][frame_counter] 
     end
 
-    -- Flash Pallet if we have a double jump
+    -- Flash if we have a double jump
     if(player_double_jump and game_time % 2 == 0) then
         if(player_double_jump_flash) then
             player_double_jump_flash = false
@@ -254,7 +255,6 @@ end
 -- Do player being hit
 function player_hit()
     game_lives -= 1
-    player_consecutive_jumps = 0
     if(game_lives > 0) then
         player_invol_timer = 60
         add_new_vfx(player.x, player.y, 0, 0, 0, 0, {22}, 80, 10)
