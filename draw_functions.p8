@@ -37,7 +37,8 @@ function draw_hud()
 
 	--draw_stage_hud(8, 120, 112)
 	draw_stage_hud(64, 112)
-	print_shadow("stage:"..game_stage, 50, 105, 7, 1)
+	print_shadow("stage:"..(flr(game_stage/4)+1).." act:"..((game_stage-1)%3)+1, 50, 105, 7, 1)
+
 end 
 
 -- function draw_stage_hud(_x,_y)

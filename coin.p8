@@ -18,6 +18,8 @@ function add_new_coin( _x, _y, _is_extra_life)
     add(coins, {
         x=_x,
         y=_y,
+        draw_x = _x,
+        draw_y = _y,
         bx=0,
         by=0,
         bw=6,
@@ -36,7 +38,7 @@ function add_new_coin( _x, _y, _is_extra_life)
         is_extra_life = _is_extra_life or false,
         draw=function(self)
             if(self.is_extra_life) then
-                sspr(88, 16, 16, 8, self.x-4, self.y)
+                sspr(88, 16, 16, 8, self.draw_x-4, self.draw_y)
             else
                 if(self.is_picked_up == 0) then
                     spr(self.animation[self.anim_index], self.x, self.y) 
@@ -56,6 +58,7 @@ function add_new_coin( _x, _y, _is_extra_life)
                     self.anim_index += 1
                     if(self.anim_index > count(self.animation)) self.anim_index = 1
                 end
+                
                 -- Collision with player
                 if(overlap(player, self)) then 
 

@@ -38,6 +38,7 @@ function player_init()
 	player_air_friction = 0.1
 	player_gravity = 0.25
 	player_invol_timer = 60
+    player_wind = 0--0.125 --a good number
 
     jump_forgivness_timer = 0
 	jump_forgivness = 5 -- Frames of forgivness we give the player
@@ -95,6 +96,9 @@ function step_player()
         -- Friction
         player_hspd = approach(player_hspd, 0, player_friction)
 
+        --Wind
+        player_hspd = approach(player_hspd, sgn(player_wind), abs(player_wind))
+
     -- If player is not on ground
     else 
         -- Gravity
@@ -120,12 +124,17 @@ function step_player()
 
         -- Move player left and right
         if(btn(1)) then 
-            player_hspd = approach(player_hspd, player_hspd_max, player_move_speed)
+            player_hspd += player_move_speed--approach(player_hspd, player_hspd_max, player_move_speed)
         elseif(btn(0)) then
-            player_hspd = approach(player_hspd, -player_hspd_max, player_move_speed)
+            player_hspd -= player_move_speed--approach(player_hspd, -player_hspd_max, player_move_speed)
         else
             player_hspd = approach(player_hspd, 0, player_air_friction)
         end
+
+        -- Add wind 
+        player_hspd += player_wind
+        --Clamp hspd
+        player_hspd = clamp(player_hspd, -player_hspd_max, player_hspd_max)
 
 
         -- Jump bonus
@@ -178,6 +187,7 @@ function step_player()
         player_vspd = 0
         player_consecutive_jump_timer = 0
         player_consecutive_score = 0
+        extra_life_combo_number = 0
         jump_released = false 
     end 
 end

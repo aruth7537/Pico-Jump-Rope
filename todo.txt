@@ -1,5 +1,52 @@
-add animations to highscore and score entry
-add highscore in game
-add secrets 
-polish here and there
- 
+Avery's big todo list.
+- Redo the stages
+-- [Bigger list]
+- 1UP (Finalize Sound and Graphics)
+- 1UP at 200, 400, 600, 800, and 1000 point combo 
+
+
+- Stages
+Limbo (First Circle)
+-- Stage 1 Act 1: No obstacles, 2 coins. 
+-- Stage 1 Act 2: Introduce Cans. 
+-- Stage 1 Act 3: Cans , Introduce Clouds overhead
+
+Lust (Second Circle - Terbulant winds and storms / applied forces)
+-- Stage 2 Act 1: 1UP, Wind left, cans left 
+-- Stage 2 Act 2: No wind, cans left and right 
+-- Stage 2 Act 3: Wind Right, cans right 
+
+Gluttony (Third Circle - Rain/ Lightning)
+-- Stage 3 Act 1: . 
+-- Stage 3 Act 2: .
+-- Stage 3 Act 3: .
+
+Greed (Fourth Circle - Red Coins Kill) 
+-- Stage 4 Act 1: . 
+-- Stage 4 Act 2: .
+-- Stage 4 Act 3: .
+
+Wrath (Fifth Circle - 
+-- Stage 5 Act 1: . 
+-- Stage 5 Act 2: .
+-- Stage 5 Act 3: .
+
+Heresy (Sixth Circle - 
+-- Stage 6 Act 1: . 
+-- Stage 6 Act 2: .
+-- Stage 6 Act 3: .
+
+Violence (Seventh Circle - Raining Blood. Viloent lightning strikes target the player.
+-- Stage 7 Act 1: . 
+-- Stage 7 Act 2: .
+-- Stage 7 Act 3: .
+
+Fraud (Eighth Circle - 
+-- Stage 8 Act 1: . 
+-- Stage 8 Act 2: .
+-- Stage 8 Act 3: .
+
+Treachery (Ninth Circle - 
+-- Stage 9 Act 1: . 
+-- Stage 9 Act 2: .
+-- Stage 9 Act 3: .

@@ -41,13 +41,17 @@ function add_new_fire(_x, _y, _life)
                 end
             end
 
+            self.life -= 1
+
             -- Kill after life is up 
-            if(self.life != 0) then
-                self.life -= 1
-                if(self.life == 0) then
-                    del(fire,self)
-                end
-            end 
+            if(self.life <= 0) then
+                del(fire,self)
+            end
+
+        end,
+
+        clear=function(self)
+            del(fire,self)
         end,
     })
 end

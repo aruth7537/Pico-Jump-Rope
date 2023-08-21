@@ -6,7 +6,7 @@ function cans_init()
     cans = {}
 end
 
-function add_new_can(_x, _y, _hsp, _can_type)
+function add_new_can(_x, _y, _hsp, _can_type, _fire_life)
     add(cans,{
         x=_x,
         y=_y,
@@ -18,6 +18,7 @@ function add_new_can(_x, _y, _hsp, _can_type)
         hsp = _hsp,
         grav = 0.25,
         can_type = _can_type or 1,
+        fire_life = _fire_life or 0,
         animation = {{38, 37, 36, 35},
                      {35, 36, 37, 38},
                      {38, 37, 36, 35},},

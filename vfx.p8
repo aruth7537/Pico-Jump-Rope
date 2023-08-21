@@ -57,7 +57,7 @@ function add_new_vfx(_x, _y, _hsp, _vsp, _grav, _fric, _animation, _life, _anim_
                 if(self.life <= 0) del(vfx,self)
             end 
             -- Physics 
-            if (self.grav > 0) self.vsp += self.grav
+            self.vsp += self.grav
             if (self.fric > 0) self.hsp = approach(self.hsp, 0, self.fric)
             if (self.fric > 0) self.vsp = approach(self.vsp, 0, self.fric)
             self.x += self.hsp
