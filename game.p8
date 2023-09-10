@@ -404,6 +404,8 @@ end
 function spawn_things()
 	if    (game_stage == 1 ) then 
 
+		if(time()%0.5 == 0) add_new_vfx(136, rnd(floor_y), -8, 0, 0, 0, {108, 23}, 160, 1) -- Wind 
+
 	elseif(game_stage == 2 ) then
 		if(game_stage_has_changed) set_message("stage 1 act 2", 60)
 		if(time()%5 == 0) add_new_can(-8, 76, rnd({1,1.1,1.2,1.3,1.4,1.5}), 1)
@@ -416,9 +418,10 @@ function spawn_things()
 
 	elseif(game_stage == 4 ) then
 		if(game_stage_has_changed) set_message("stage 2 act 1", 60)
+		player_wind = 0.125
 		if(time()%3 == 0) add_new_can(-8, 76, rnd({1,1.1,1.2,1.3,1.4,1.5})+1, 1)
 		if(time()%0.5 == 0) add_new_vfx(-8, rnd(32), 3+rnd(2), 1+rnd(1), -0.05, 0, {91,92,107,91,92,107,91,92,107}, 160, rnd({2,3,4})) -- leaf 
-		player_wind = 0.125
+		
 		game_map_pal_index = 2 
 
 	elseif(game_stage == 5 ) then
@@ -430,7 +433,7 @@ function spawn_things()
 		player_wind = -0.125
 		if(time()%3 == 0) add_new_can(136, 76, -rnd({1,1.1,1.2,1.3,1.4,1.5})-1, 2)
 		if(time()%0.5 == 0) add_new_vfx(136, rnd(32), -3-rnd(2), 1+rnd(1), -0.05, 0, {91,92,107,91,92,107,91,92,107}, 160, rnd({2,3,4})) -- leaf 
-
+		if(time()%2 == 0) add_new_vfx(136, rnd(floor_y), -2, 0, 0, 0, {108}, 160, 4) -- Wind 
 
 	elseif(game_stage == 7 ) then
 		if(game_stage_has_changed) set_message("stage 3 act 1", 60)
@@ -561,7 +564,7 @@ function step_game_over()
 			if (abs(game_over_vsp) > 1) then 
 				game_over_logo_y = game_over_floor
 				game_over_vsp = -(game_over_vsp/2)
-				sfx(3)
+				sfx(3, 1)
 			else
 				game_over_logo_y = game_over_floor
 				game_over_vsp = 0

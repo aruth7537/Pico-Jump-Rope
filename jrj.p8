@@ -50,10 +50,10 @@ end
 function sfx_hit_ground()
 	if (rope_rot < -15.4 and rope_sound_played == false) then
 		rope_sound_played = true
-		sfx(0) 
+		sfx(0, 2) 
 	elseif (rope_rot > -15.4 and rope_sound_played == true ) then
 		rope_sound_played = false
-		sfx(1) 
+		sfx(1, 2) 
 	end
 end
 

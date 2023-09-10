@@ -64,14 +64,14 @@ function add_new_coin( _x, _y, _is_extra_life)
 
                     if(self.is_extra_life) then
                         game_lives+=1
-                        sfx(20)
+                        sfx(20, 1)
                         del(coins, self)
                     else
                         player_consecutive_score += 1
                         -- Incorporate the number of jumps taken minus 1 so we don't count the first jump
                         local score = player_consecutive_score --+ clamp(player_consecutive_jumps-1, 0, 2)
                         -- Play coin pickup 
-                        sfx(17, -1, clamp((score-1)%10, 0, 9)*3, 3)
+                        sfx(17, 1, clamp((score-1)%10, 0, 9)*3, 3)
                         -- Increase Score 
                         increase_score(score)
                         -- Increase current coin count

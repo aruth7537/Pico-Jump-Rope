@@ -93,7 +93,7 @@ function add_new_can(_x, _y, _hsp, _can_type, _fire_life)
                 self.lightning_strike_timer-= 1
                 if(self.lightning_strike_timer == 30) then
                     add_new_vfx(self.x, self.y, self.hsp, -1, 0, 0, {87,88,89,90}, -1, 5)
-                    sfx(19)
+                    sfx(19, 1)
                 end
                 if(self.lightning_strike_timer <= 0) then
                     add_new_lightningbolt(self.x)
@@ -116,7 +116,7 @@ function add_new_can(_x, _y, _hsp, _can_type, _fire_life)
                 self.is_flying = true
                 self.can_fly = false
                 self.anim_speed = 2
-                sfx(7)
+                sfx(7, 1)
             end
         end
     })

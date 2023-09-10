@@ -38,7 +38,7 @@ function add_new_bird(_x, _y, _hsp)
                 self.anim_index += 1
                 if(self.anim_index > count(self.animation)) then
                     self.anim_index = 1
-                    sfx(10)
+                    sfx(10, 1)
                 end 
             end
 
