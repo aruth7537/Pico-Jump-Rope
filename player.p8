@@ -117,7 +117,7 @@ function step_player()
             player_double_jump = false
             player_consecutive_jumps = 3
             player_jump_anim_index = clamp(player_consecutive_jumps, 1, 3)
-            sfx(13)
+            sfx(13, 1)
             add_new_vfx(player.x+2, player.y+player.bh-1, 1, 0, -0.01, 0.02, {84,85}, 0, 10)
             add_new_vfx(player.x+2, player.y+player.bh-1, -1, 0, -0.01, 0.02, {84,85}, 0, 10)
         end
@@ -180,7 +180,7 @@ function step_player()
         if(player_vspd > 0) then
             add_new_vfx(player.x+2, player.y+player.bh-1, 1, 0, -0.01, 0.02, {84,85}, 0, 10)
             add_new_vfx(player.x+2, player.y+player.bh-1, -1, 0, -0.01, 0.02, {84,85}, 0, 10)
-            sfx(16)
+            sfx(16, 1)
         end 
         player.y = floor_y - player.bh
         player_on_ground = true
@@ -268,11 +268,11 @@ function player_hit()
     if(game_lives > 0) then
         player_invol_timer = 60
         add_new_vfx(player.x, player.y, 0, 0, 0, 0, {22}, 80, 10)
-        sfx(12)
+        sfx(12, 1)
     else
         player_is_hit = true
         total_deaths+=1
-        sfx(2)
+        sfx(2, 1)
         game_scale = 0
         game_scale_target = 0
         if(is_highscore(game_score) != -1) then

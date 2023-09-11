@@ -12,6 +12,8 @@ function coin_init()
     next_coin_anim = {49,50}
     next_coin_anim_index = 1
     next_coin_anim_speed = 5
+    coin_spawn_w = 32
+    coin_spawn_h = 32
 end
 
 function add_new_coin( _x, _y, _is_extra_life)
@@ -20,6 +22,8 @@ function add_new_coin( _x, _y, _is_extra_life)
         y=_y,
         draw_x = _x,
         draw_y = _y,
+        anchor_x = _x,
+        anchor_y = _y,
         bx=0,
         by=0,
         bw=6,
@@ -35,10 +39,11 @@ function add_new_coin( _x, _y, _is_extra_life)
         dist_pickup = 0,
         coin_dest_x = 64,
         coin_dest_y = 128,
+        seed = rnd(32),
         is_extra_life = _is_extra_life or false,
         draw=function(self)
             if(self.is_extra_life) then
-                sspr(88, 16, 16, 8, self.draw_x-4, self.draw_y)
+                spr(43, self.x, self.y)
             else
                 if(self.is_picked_up == 0) then
                     spr(self.animation[self.anim_index], self.x, self.y) 
@@ -58,14 +63,21 @@ function add_new_coin( _x, _y, _is_extra_life)
                     self.anim_index += 1
                     if(self.anim_index > count(self.animation)) self.anim_index = 1
                 end
+
+                if(self.is_extra_life) then
+                    self.x = sin(time()*0.5+self.seed)*24 + self.anchor_x
+                    self.y = cos(time()*0.25+self.seed)*8 + self.anchor_y
+                    if(time()%0.25 == 0) add_new_vfx( self.x, self.y, 0, 0, 0, 0, {48,49,50}, 0, 5)
+                end 
                 
                 -- Collision with player
                 if(overlap(player, self)) then 
 
                     if(self.is_extra_life) then
                         game_lives+=1
-                        sfx(20, 1)
+                        sfx(20, 3)
                         del(coins, self)
+                        spawn_score_vfx(self.x, self.y, "1up!")
                     else
                         player_consecutive_score += 1
                         -- Incorporate the number of jumps taken minus 1 so we don't count the first jump
@@ -121,9 +133,9 @@ end
 
 function spawn_new_coin()
     if(player.x+player.bw/2 > 64) then
-        add_new_coin(32+rnd(32), 36+rnd(32))
+        add_new_coin(64-coin_spawn_w+rnd(coin_spawn_w), floor_y-8-rnd(coin_spawn_h)) --36+rnd(32))
     else
-        add_new_coin(64+rnd(32), 36+rnd(32))
+        add_new_coin(64+rnd(coin_spawn_w), floor_y-8-rnd(coin_spawn_h))
     end
 end
 
@@ -131,6 +143,7 @@ end
 function spawn_score_vfx(_x, _y, _score,_vsp)
 	vsp = _vsp or -1
     score_col = {5, 13, 6, 7, 15, 14, 8, 10, 9, 2}
-    score_col_index = min(flr(_score/10)+1, 10) 
-	add_new_vfx(_x, _y, 0, vsp, 0, 0.05, tostr(_score).."0", 30, 5, score_col[score_col_index] )
+    score_col_index = min(flr(player_consecutive_score/10)+1, 10)--min(flr(_score/10)+1, 10) 
+    if(type(_score) == "number") add_new_vfx(_x, _y, 0, vsp, 0, 0.05, tostr(_score).."0", 30, 5, score_col[score_col_index] )
+    if(type(_score) == "string") add_new_vfx(_x, _y, 0, vsp, 0, 0.05, _score, 30, 5, 8 )
 end

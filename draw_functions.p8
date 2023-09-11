@@ -18,13 +18,7 @@ function debug_print()
 
 	print("playerx:"..player.x, 64, 8)
 	print("playery:"..player.y, 64, 16)
-	-- print("gd_next:"..game_data_next,0,24)
-	
-	-- print("dist sign:"..dist_sign, 64, 0)
-	-- print("last sign:"..dist_last_sign, 64, 8)
-	-- print(player_is_hit, 64, 16) 
-	-- print("player feet:"..player_bottom, 64, 24)
-	-- print("floor:"..floor_y, 64, 32)
+
 end
 
 function draw_hud()
@@ -37,37 +31,13 @@ function draw_hud()
 
 	--draw_stage_hud(8, 120, 112)
 	draw_stage_hud(64, 112)
-	print_shadow("stage:"..(flr(game_stage/4)+1).." act:"..((game_stage-1)%3)+1, 50, 105, 7, 1)
-
+	--print_shadow("stage:"..(flr(game_stage/4)+1).." act:"..((game_stage-1)%3)+1, 50, 105, 7, 1)
+	print_shadow(game_stage_title, 40, 105, 7, 1)
 end 
 
--- function draw_stage_hud(_x,_y)
--- 	local spr_w = 33
--- 	local draw_w = flr(spr_w * (game_score/game_score_end))
--- 	local draw_w2 = flr(spr_w * ((game_score-game_score_end)/game_score_end))
--- 	-- Draw the text "stage"
--- 	print("stage: "..game_stage, _x+1, _y-6, 1)
--- 	print("stage: "..game_stage, _x, _y-7, 7)
-
--- 	-- Draw The First progress bar
--- 	sspr(89,0,draw_w,4,_x+1,_y) -- Draw the progress bar
--- 	sspr(88,8,34,6,_x,_y) -- Draw the UI
-
--- 	-- Draw the Second Progress bar
--- 	if(game_stage >= 5) then
--- 		sspr(89,4,draw_w2,4,_x+1,_y+7) -- Progress Bar
--- 		sspr(88,8,34,6,_x,_y+6) -- Draw UI 
--- 	end
--- end 
 
 function draw_stage_hud(_x, _y)
-	-- local draw_w = clamp(((game_score-game_score_new_zero)/(game_score_end-game_score_new_zero)) * _w,  0, _w)
 
-	-- sspr(88,8, 1,3, _x, _y+1, draw_w, 3)
-
-	-- sspr(104, 8, 1, 6, _x-1, _y)
-	-- sspr(105, 8, 6, 6, _x, _y, _w, 6)
-	-- sspr(112, 8, 2, 6, _x+_w, _y)
 	local draw_x = _x - ((game_coins_to_next_stage/2) * 8) / 2 
 	local draw_y = _y 
 	local rows = 2

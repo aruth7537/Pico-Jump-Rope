@@ -5,20 +5,20 @@ function birds_init()
     birds = {}
 end
 
-function add_new_bird(_x, _y, _hsp)
+function add_new_bird(_x, _y, _hsp, _animation, _bx, _by, _bw, _bh)
     add(birds,{
         x=_x,
         y=_y,
-        bx = 2,
-        by = 1,
-        bw=14,
-        bh=4,
+        bx = _bx or 2,
+        by = _by or 1,
+        bw = _bw or 14,
+        bh = _bh or 4,
         vsp = 0,
         hsp = -_hsp,
         anim_index = 1,
         anim_speed = 3,
         anim_timer = 0,
-        animation = {
+        animation = _animation or {
             {68,69,70}, -- Frame 1
             {71,72,73}, -- Frame 2
             {74,75,76}, -- Frame 3
@@ -28,6 +28,7 @@ function add_new_bird(_x, _y, _hsp)
             spr(self.animation[self.anim_index][1],self.x,self.y)
             spr(self.animation[self.anim_index][2],self.x+8,self.y)
             spr(self.animation[self.anim_index][3],self.x+16,self.y)
+            --rect(self.x+self.bx, self.y+self.by, self.x+self.bx+self.bw, self.y+self.by+self.bh, 8)
         end,
 
         update=function(self)

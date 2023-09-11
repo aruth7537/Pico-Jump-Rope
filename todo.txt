@@ -8,28 +8,29 @@ Avery's big todo list.
 - Stages
 Limbo (First Circle)
 -- Stage 1 Act 1: No obstacles, 2 coins. 
--- Stage 1 Act 2: Introduce Cans. 
+-- Stage 1 Act 2:  Introduce Cans. 
 -- Stage 1 Act 3: Cans , Introduce Clouds overhead
 
 Lust (Second Circle - Terbulant winds and storms / applied forces)
--- Stage 2 Act 1: 1UP, Wind left, cans left 
--- Stage 2 Act 2: No wind, cans left and right 
+-- Stage 2 Act 1: Wind left, cans left 
+-- Stage 2 Act 2: 1UP, No wind, cans left and right 
 -- Stage 2 Act 3: Wind Right, cans right 
 
 Gluttony (Third Circle - Rain/ Lightning)
--- Stage 3 Act 1: . 
--- Stage 3 Act 2: .
--- Stage 3 Act 3: .
+-- Stage 3 Act 1: . Lightning BOLT, light rain, fire, Rope speed increase
+-- Stage 3 Act 2: . Lightning BOLT (faster),  rain, no fire 
+-- Stage 3 Act 3: . Lightning BOLT (fasterer),  heavy rain, no fire
 
-Greed (Fourth Circle - Red Coins Kill) 
--- Stage 4 Act 1: . 
--- Stage 4 Act 2: .
--- Stage 4 Act 3: .
+Greed (Fourth Circle - More Coins and Birds) 
+-- Stage 4 Act 1: . Add new coin, birds,
+-- Stage 4 Act 2: . More Frequent Birds, 
+-- Stage 4 Act 3: . LOTS OF BIRDS
 
-Wrath (Fifth Circle - 
--- Stage 5 Act 1: . 
--- Stage 5 Act 2: .
--- Stage 5 Act 3: .
+Wrath (Fifth Circle - Regrowth )
+-- Stage 5 Act 1: . Regrow Grass, Tortle, Sprinkles
+-- Stage 5 Act 2: . Tortle, Birds
+-- Stage 5 Act 3: . Both Cans, Birds
+-- Stage 5 Act 4: 
 
 Heresy (Sixth Circle - 
 -- Stage 6 Act 1: . 
