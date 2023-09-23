@@ -1,8 +1,13 @@
 Avery's big todo list.
-- Redo the stages
--- [Bigger list]
-- 1UP (Finalize Sound and Graphics)
-- 1UP at 200, 400, 600, 800, and 1000 point combo 
+- Move messages and possibly make it pulse
+- Adjust uncenter 1ups from score gain
+- Add a combo fx when hitting the ground
+
+
+
+
+
+
 
 
 - Stages

@@ -16,9 +16,7 @@ function game_init()
 	lightningbolt_init()
 	fire_init()
 	--add_new_can(32, 76, 1, 1)
-	add_new_coin(80,36)
-    add_new_coin(40,36)
-	
+
 	game_message = ""
 	game_message_life = 0
 
@@ -33,11 +31,11 @@ function game_init()
 	game_stage = 1
 	game_stage_ui_x = 92
 	game_stage_ui_y = 7
-	game_stage_has_changed = false
+	game_stage_has_changed = true
 	game_stage_title = "stage 1 act 1"
 	game_coins = 0
 	game_coins_to_next_stage = 8
-	game_coins_to_next_stage_max = 28
+	game_coins_to_next_stage_max = 20
 	game_scale = 1
 	game_scale_target = 1
 	game_script = nil
@@ -64,7 +62,9 @@ function game_init()
 					{1,2,8,4,5,6,7,8,8,10,11,12,13,14,15}, -- 6 Blood
 					{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, -- 7 Blackout
 					{1,2,14,4,5,6,7,8,15,10,11,12,13,14,15}, -- 8 Pink 
-					{1,2,7,4,5,6,7,8,7,10,11,12,13,14,15}, -- 9 Ice 
+					{1,2,7,4,4,6,7,8,7,10,11,12,13,14,15}, -- 9 Ice 
+					{1,2,5,4,4,6,7,8,5,10,11,12,13,14,15}, -- 10 Darker Ice
+					{0,0,5,2,5,6,7,8,5,10,11,12,13,14,15}, -- 11 Night time ice
 					} 
 	test = distance( 50, 50, 1, 1)
 
@@ -123,6 +123,11 @@ function game_init()
 	col_index = 1
 	col = 7
 	alt_color = false
+	hide_rope = false
+
+	add_new_coin(80,36)
+    add_new_coin(40,36)
+	s_flower(78, floor_y-8)
 end
 
 ------------
@@ -324,7 +329,11 @@ function game_draw()
 		end
             
         -- Finally draw the pixel
-        pset(i + rope_start_x, d_y_capped, col)
+		if(hide_rope == false) then 
+			pset(i + rope_start_x, d_y_capped, col)
+		elseif( col == 8) then 
+			pset(i + rope_start_x, d_y_capped, col)
+		end 
 		--pset(i + rope_start_x, d_y_capped-1, col_gradient[col_index-1])
 		--pset(i + rope_start_x, d_y_capped+1, 1)
     end
@@ -366,13 +375,13 @@ function increase_score(_value)
 	local value = _value or 1
 	game_score += value
 
-	if(player_consecutive_score % 25 == 0) then
-		extra_life_combo_number+=1
-		if(extra_life_combo_number > extra_life_highest_combo_number) then
-			extra_life_highest_combo_number+=1
-			add_new_coin(32+rnd(32),25,true)
-		end 
-	end
+	-- if(player_consecutive_score % 25 == 0) then
+	-- 	extra_life_combo_number+=1
+	-- 	if(extra_life_combo_number > extra_life_highest_combo_number) then
+	-- 		extra_life_highest_combo_number+=1
+	-- 		add_new_coin(60,25,true)
+	-- 	end 
+	-- end
 end
 
 -- Increase Coins
@@ -411,19 +420,57 @@ function s_snow()
 end 
 
 function s_leaves(_x) 
-	if(time()%0.5 == 0) add_new_vfx(_x, rnd(32), sgn(_x*-1)*3 + sgn(_x*-1)*rnd(2), 1+rnd(1), -0.05, 0, {91,92,107,91,92,107,91,92,107}, 160, rnd({2,3,4}))
+	if(time()%0.5 == 0) add_new_vfx(_x, rnd(32), sgn(_x*-1)*3 + sgn(_x*-1)*rnd(2), 1+rnd(1), -0.05, 0, {91,92,107}, 160, rnd({2,3,4}))
+end 
+
+function s_leaves_pink() 
+	if(time()%0.5 == 0) add_new_vfx(rnd(128), -8, 0, 1+rnd(1), 0, 0, {108,123,124}, 160, rnd({2,3,4}))
 end 
 
 function s_tortle()
-	add_new_bird(-16, 72, -0.25, {{59,60,23}, {59,60,23}, {61, 62, 23}, {61, 62, 23}}, 2, 3, 8, 4) -- Tortle
+	add_new_bird(-16, 72, -0.25, {{59,60,23}, {59,60,23}, {61, 62, 23}, {61, 62, 23}}, 2, 3, 8, 4, 21) -- Tortle
 end 
+
+function s_tortle_shell(_x)
+	add_new_bird(_x, 73, sgn(_x)*-1, {{23,203,23}, {23,204,23}, {23, 205, 23}, {23, 203, 23}, {23, 206, 23}, {23, 207, 23}, {23, 203, 23}}, 7, 3, 8, 4, 21) -- Tortle
+end 
+
+function s_bird(_x)
+	add_new_bird(_x, 24+rnd(36), sgn(_x)*rnd({1.2, 1, 0.8, 0.6}))
+end 
+
+function s_lightning_strike(_time, _firelife)
+	local firelife = _firelife or 0
+	if(time()%_time == 0) add_new_can(player.x, 80, 0, 3, firelife)
+end
 
 function renew_ground(_plantFlower)
 	for i = 0, 16 do
 		if(mget(i, 10) == 24 and rnd(5) <= 1 and _plantFlower == true) then
-			add_new_vfx(i*8, floor_y-8, 0, 0, 0, 0, {139, 140, 141, 142, 143}, 0, 300+rnd(60))
+			s_flower(i*8, floor_y-8)
 		end
 		mset(i, 10, 8)
+	end 
+end
+
+function s_flower(_x, _y)
+	add_new_vfx(_x, _y, 0, 0, 0, 0, {139, 140, 141, 142, 143}, 0, 300+rnd(60), flower_step)
+end 
+
+function flower_step(self)
+	if (col_with_player(self.x, self.y+2) or col_with_player(self.x+7, self.y+2)) then
+		if (self.anim_index == 1) del(vfx, self)
+		if (self.anim_index == 2) then
+			self.animation = {158,158,158,158,158}
+			self.anim_index = 4
+		end
+		if (self.anim_index == 3) then
+			s_one_up()
+			player_double_jump = true
+			self.animation = {159,159,159,159,159}
+			self.anim_index = 4
+			sfx(20, 3)
+		end 
 	end 
 end
 
@@ -433,54 +480,73 @@ function s_clear_fire()
 	end
 end 
 
+function s_can(_x, _time, _type, _extraspeed)
+	local extraspeed = _extraspeed or 0
+	if(time()%_time == 0) add_new_can(_x, 76, sgn(_time*-1)*rnd({1,1.1,1.2,1.3,1.4,1.5})+extraspeed, _type)
+end 
+
+function s_one_up()
+	add_new_coin(60, 16, true) 
+end 
+
+function s_conditional_one_up()
+	if(game_lives <= 1) s_one_up()
+end 
+
 -- Spawn things
 function spawn_things()
 	if    (game_stage == 1 ) then 
 
 	elseif(game_stage == 2 ) then
-		if(game_stage_has_changed) set_message("stage 1 act 2", 60, true)
-			if(time()%5 == 0) add_new_can(-8, 76, rnd({1,1.1,1.2,1.3,1.4,1.5}), 1)
+		if(game_stage_has_changed) then
+			set_message("stage 1 act 2", 60, true)
+		end
+		s_can(-8, 5, 1)
 
 	elseif(game_stage == 3 ) then 
 		if(game_stage_has_changed) set_message("stage 1 act 3", 60, true)
-		if(time()%5 == 0) add_new_can(-8, 76, rnd({1,1.1,1.2,1.3,1.4,1.5}), 1)
+		s_can(-8, 5, 1)
 		clouds_active=true
 
 
 	elseif(game_stage == 4 ) then
-		if(game_stage_has_changed) set_message("stage 2 act 1", 60, true)
-		player_wind = 0.125
-		if(time()%3 == 0) add_new_can(-8, 76, rnd({1,1.1,1.2,1.3,1.4,1.5})+1, 1)
-		s_leaves(-8)
-		
-		game_map_pal_index = 2 
+		if(game_stage_has_changed) then 
+			set_message("stage 2 act 1", 60, true)
+			s_conditional_one_up()
+			s_tortle()
+		end 
+		player_wind = 0
 
 	elseif(game_stage == 5 ) then
 		if(game_stage_has_changed) set_message("stage 2 act 2", 60, true)
-		if(game_stage_has_changed)  add_new_coin(60, 16, true) -- 1UP
-		player_wind = 0
+		player_wind = 0.125
+		s_can(-8, 3, 1, 1)
+		s_leaves(-8)
+		game_map_pal_index = 2 
 
 	elseif(game_stage == 6 ) then
 		if(game_stage_has_changed) set_message("stage 2 act 3", 60, true)
 		player_wind = -0.125
-		if(time()%3 == 0) add_new_can(136, 76, -rnd({1,1.1,1.2,1.3,1.4,1.5})-1, 2)
+		s_can(136, 3, 2, -1)
 		s_leaves(136)
-		--if(time()%0.5 == 0) add_new_vfx(136, rnd(32), -3-rnd(2), 1+rnd(1), -0.05, 0, {91,92,107,91,92,107,91,92,107}, 160, rnd({2,3,4})) -- leaf 
 
 
 	elseif(game_stage == 7 ) then
-		if(game_stage_has_changed) set_message("stage 3 act 1", 60, true)
+		if(game_stage_has_changed) then
+			set_message("stage 3 act 1", 60, true)
+			s_conditional_one_up()
+		end 
 		game_map_pal_index = 3 
 		player_wind = 0
 		s_sprinkle()
-		if(game_stage_has_changed) add_new_lightningbolt(-32, 1)
-		if(time()%5 == 0) add_new_can(player.x, 80, 0, 3) -- Actually a lightning strike at player location
+		--if(game_stage_has_changed) add_new_lightningbolt(-32, 1)
+		s_lightning_strike(5)
 
 	elseif(game_stage == 8 ) then
 		if(game_stage_has_changed) set_message("stage 3 act 2", 60, true)
 		s_clear_fire()
 		s_rain()
-		if(time()%4 == 0) add_new_can(player.x, 80, 0, 3) -- Actually a lightning strike at player location
+		s_lightning_strike(4)
 
 	elseif(game_stage == 9 ) then
 		if(game_stage_has_changed) set_message("stage 3 act 3", 60, true)
@@ -488,71 +554,162 @@ function spawn_things()
 		s_clear_fire()
 		s_rain() 
 		s_rain()
-		--add_new_vfx( rnd(140), -8, -2, 5, 0.1, 0, {45}, 15, 1) -- Rain
-		if(time()%3 == 0) add_new_can(player.x, 80, 0, 3) -- Actually a lightning strike at player location
+		s_lightning_strike(3)
 		s_leaves(136)
-		--if(time()%0.5 == 0) add_new_vfx(136, rnd(32), -3-rnd(2), 1+rnd(1), -0.05, 0, {91,92,107,91,92,107,91,92,107}, 160, rnd({2,3,4})) -- leaf 
+
+	
 	elseif(game_stage == 10 ) then
 		if(game_stage_has_changed) set_message("intermission 1", 60, true)
 		player_wind = 0
 		s_sprinkle()
 		game_scale_target = 0.5
-		if(game_stage_has_changed)  add_new_coin(60, 16, true)
+		if(game_stage_has_changed) s_one_up()
+
 
 	elseif(game_stage == 11 ) then
-		if(game_stage_has_changed) set_message("stage 4 act 1", 60, true)
+		if(game_stage_has_changed) then
+			set_message("stage 4 act 1", 60, true)
+			s_conditional_one_up()
+		end 
 		game_map_pal_index = 5
 		clouds_active=false
 		coin_spawn_w = 48
 		coin_spawn_h = 48
-		game_scale_target = 1.5
-		if(game_stage_has_changed) add_new_coin(64,64)
-		if(time()%5 == 0) add_new_bird(140, 24+rnd(36), rnd({1, 0.8}))	
+		game_scale_target = 1.3
+		--if(game_stage_has_changed) add_new_coin(64,64)
+		--if(time()%5 == 0) add_new_bird(140, 24+rnd(36), rnd({1, 0.8}))	
 		s_sprinkle()
+		if(time()%5 == 0) s_bird(140)
 
 	elseif(game_stage == 12 ) then
 		if(game_stage_has_changed) set_message("stage 4 act 2", 60, true)
-		if(time()%3 == 0) add_new_bird(140, 24+rnd(36), rnd({1.2, 1, 0.8, 0.6}))	
+		if(time()%5 == 0) s_bird(140)
+		--player_wind = 0.125
+		--s_leaves(-8)
+		if(time()%4 == 0) s_tortle_shell(-16)
+
 
 	elseif(game_stage == 13 ) then
 		if(game_stage_has_changed) set_message("stage 4 act 3", 60, true)
-		if(time()%2 == 0) add_new_bird(140, 24+rnd(36), rnd({1.4, 1.2, 1}))	
+		if(time()%4 == 0) s_bird(-16)
+		if(time()%5 == 0) s_tortle_shell(132)
+		player_wind = 0.125
+		s_leaves(-8)
 
 
 	elseif(game_stage == 14 ) then
 		if(game_stage_has_changed) then 
 			set_message("stage 5 act 1", 60, true)
  			renew_ground(true)
-			s_tortle()
+			s_bird(140)
+			player_wind = 0
+			game_map_pal_index = 8
+			s_conditional_one_up()
 		end
-		game_map_pal_index = 1
-		s_sprinkle()
+		s_leaves_pink()
+
 
 	elseif(game_stage == 15 ) then
 		if(game_stage_has_changed) then
 			set_message("stage 5 act 2", 60, true)
 			s_tortle() 
 		end
-		if(time()%5 == 0) add_new_bird(140, 24+rnd(36), rnd({1.2, 1, 0.8, 0.6}))
+		if(time()%5 == 0) s_bird(140)
+		s_leaves_pink()
 
 	elseif(game_stage == 16 ) then
 		if(game_stage_has_changed) set_message("stage 5 act 3", 60, true)
-
-		if(time()%3 == 0) add_new_can(136, 76, -rnd({1,1.1,1.2,1.3,1.4,1.5})-1, 2)
-		if(time()%3 == 0) add_new_can(-8, 76, rnd({1,1.1,1.2,1.3,1.4,1.5})+1, 1)
-		if(time()%5 == 0) add_new_bird(140, 24+rnd(36), rnd({1.2, 1, 0.8, 0.6}))
-		s_snow() 
-
+		s_can(136, 3, 2, -1)
+		s_can(-8, 3, 1, 1)
+		if(time()%5 == 0) s_bird(140)
+		clouds_active = true
+		s_leaves_pink()
 
 	elseif(game_stage == 17 ) then
 		if(game_stage_has_changed) then
 			set_message("stage 6 act 1", 60, true)
 			s_tortle()
+			game_map_pal_index = 9
+			player_friction = 0
+			s_conditional_one_up()
 		end
-		game_map_pal_index = 9
+		s_snow() 
+		if(time()%5 == 0) s_bird(140)
+
+	elseif(game_stage == 18 ) then
+		if(game_stage_has_changed) then
+			set_message("stage 6 act 2", 60, true)
+		end 
 		s_snow() 
 		s_snow() 
-		player_friction = 0
+		s_can(-8, 5, 1)
+		if(time()%5 == 0) s_bird(140)
+
+	elseif(game_stage == 19 ) then
+		if(game_stage_has_changed) then
+			set_message("stage 6 act 3", 60, true)
+			s_tortle()
+		end 
+		s_snow() 
+		s_snow() 
+		s_snow() 
+		s_snow() 
+		s_can(-8, 5, 1)
+		s_can(136, 3, 2, -1)
+		if(time()%5 == 0) s_bird(140)
+
+	elseif(game_stage == 20 ) then
+		if(game_stage_has_changed) then
+			set_message("Intermission 2", 60, true)
+			game_map_pal_index = 11
+			game_scale_target = 0.5
+			s_one_up()
+		end 
+	elseif(game_stage == 21 ) then
+		if(game_stage_has_changed) then
+			set_message("stage 7 act 1", 60, true)
+			game_scale_target = 1.6
+			s_conditional_one_up()
+			add_new_lightningbolt(0, 32000)
+			add_new_lightningbolt(120, 32000)
+		end 
+	elseif(game_stage == 22 ) then
+		if(game_stage_has_changed) then
+			set_message("stage 7 act 2", 60, true)
+		end 
+	elseif(game_stage == 23 ) then
+		if(game_stage_has_changed) then
+			set_message("stage 7 act 3", 60, true)
+		end 
+	elseif(game_stage == 24 ) then
+		if(game_stage_has_changed) then
+			set_message("stage 8 act 1", 60, true)
+			game_map_pal_index = 10
+		end 
+	elseif(game_stage == 25 ) then
+		if(game_stage_has_changed) then
+			set_message("stage 8 act 2", 60, true)
+		end 
+	elseif(game_stage == 26 ) then
+		if(game_stage_has_changed) then
+			set_message("stage 8 act 3", 60, true)
+		end 
+	elseif(game_stage == 27 ) then
+		if(game_stage_has_changed) then
+			set_message("stage 9 act 1", 60, true)
+		end 
+	elseif(game_stage == 28 ) then
+		if(game_stage_has_changed) then
+			set_message("stage 9 act 2", 60, true)
+		end 
+	elseif(game_stage == 28 ) then
+		if(game_stage_has_changed) then
+			set_message("stage 9 act 3", 60, true)
+		end 
+	elseif(game_stage == 29 ) then
+		if(game_stage_has_changed) then
+			set_message("Final Stage", 60, true)
+		end 
 	end 
 end
 

@@ -186,6 +186,7 @@ function step_player()
         player_on_ground = true
         player_vspd = 0
         player_consecutive_jump_timer = 0
+        if(player_consecutive_score > 1) spawn_score_vfx(player.x, player.y, tostr(player_consecutive_score).."x combo!")
         player_consecutive_score = 0
         extra_life_combo_number = 0
         jump_released = false 

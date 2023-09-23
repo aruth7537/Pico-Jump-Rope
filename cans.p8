@@ -92,7 +92,7 @@ function add_new_can(_x, _y, _hsp, _can_type, _fire_life)
             if(self.can_type == 3) then
                 self.lightning_strike_timer-= 1
                 if(self.lightning_strike_timer == 30) then
-                    add_new_vfx(self.x, self.y, self.hsp, -1, 0, 0, {87,88,89,90}, -1, 5)
+                    add_new_vfx(self.x, self.y, self.hsp, -3, 0, 0, {87,88,89,90}, -1, 5)
                     sfx(19, 1)
                 end
                 if(self.lightning_strike_timer <= 0) then

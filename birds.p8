@@ -5,7 +5,7 @@ function birds_init()
     birds = {}
 end
 
-function add_new_bird(_x, _y, _hsp, _animation, _bx, _by, _bw, _bh)
+function add_new_bird(_x, _y, _hsp, _animation, _bx, _by, _bw, _bh, _sfx)
     add(birds,{
         x=_x,
         y=_y,
@@ -15,9 +15,12 @@ function add_new_bird(_x, _y, _hsp, _animation, _bx, _by, _bw, _bh)
         bh = _bh or 4,
         vsp = 0,
         hsp = -_hsp,
-        anim_index = 1,
+        hsp_start = _hsp,
+        hsp_max = 1.5,
+        anim_index = 1,        
         anim_speed = 3,
         anim_timer = 0,
+        mysfx = _sfx or 10,
         animation = _animation or {
             {68,69,70}, -- Frame 1
             {71,72,73}, -- Frame 2
@@ -39,11 +42,14 @@ function add_new_bird(_x, _y, _hsp, _animation, _bx, _by, _bw, _bh)
                 self.anim_index += 1
                 if(self.anim_index > count(self.animation)) then
                     self.anim_index = 1
-                    sfx(10, 1)
+                    sfx(self.mysfx, 3)
                 end 
             end
 
             -- Physics
+            self.hsp += player_wind
+            self.hsp = clamp(self.hsp, -self.hsp_max, self.hsp_max)
+
             self.x+=self.hsp
             self.y+=self.vsp 
     

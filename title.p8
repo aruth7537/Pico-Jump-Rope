@@ -4,7 +4,7 @@ __lua__
 function title_init()
     menu = {"play","highscores","other!"}
     menu_index = 1
-    author_string = "a game by kevin townsend"
+    author_string = "a game by avery julius"
     author_string_x = 20
     author_string_y = 112
     author_string_start_timer = 90

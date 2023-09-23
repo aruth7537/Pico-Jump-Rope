@@ -4,8 +4,10 @@ __lua__
 -- Draw message
 function draw_game_message()
 	local length = #game_message*4
-	local draw_x = 64-length/2
-	local draw_y = 32
+	--local draw_x = 64-length/2
+	--local draw_y = 32
+	local draw_x = 128-length
+	local draw_y = 0
 	print(game_message, draw_x+1, draw_y, 1) 
 	print(game_message, draw_x-1, draw_y, 1) 
 	print(game_message, draw_x, draw_y+1, 1) 

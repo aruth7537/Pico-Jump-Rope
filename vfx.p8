@@ -28,9 +28,10 @@ function add_new_vfx(_x, _y, _hsp, _vsp, _grav, _fric, _animation, _life, _anim_
         str_col = 7,
         draw=function(self)
             -- After Image Effect
-            if(self.effect == 1) pal({0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, 0)
-            if(self.effect > 1) self.str_col = self.effect
-
+            if(type(self.effect) == "number") then
+                if(self.effect == 1) pal({0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, 0)
+                if(self.effect > 1) self.str_col = self.effect
+            end 
             -- Draw Sprite or String depending on if animation is a table or string
             if(type(self.animation) == "table") then
                 spr(self.animation[self.anim_index], self.x, self.y)   
@@ -62,8 +63,10 @@ function add_new_vfx(_x, _y, _hsp, _vsp, _grav, _fric, _animation, _life, _anim_
             if (self.fric > 0) self.vsp = approach(self.vsp, 0, self.fric)
             self.x += self.hsp
             self.y += self.vsp
-
-
+            -- Script
+            if(type(self.effect) == "function") then
+                self.effect(self)
+            end 
         end,
     }, index)
 end 
