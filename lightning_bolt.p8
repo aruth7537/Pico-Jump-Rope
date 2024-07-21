@@ -15,7 +15,7 @@ function add_new_lightningbolt(_x, _fire_life)
         bw=8,
         bh=72,
         life = 4,
-        fire_life = _fire_life or 60,
+        fire_life = _fire_life or -1,
         draw=function(self)
             for i=0,9 do
                 spr(93, self.x, self.y+(8*i))

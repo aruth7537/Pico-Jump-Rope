@@ -15,6 +15,7 @@ function game_init()
 	player_init()
 	lightningbolt_init()
 	fire_init()
+	renew_ground(true)
 	--add_new_can(32, 76, 1, 1)
 
 	game_message = ""
@@ -35,7 +36,7 @@ function game_init()
 	game_stage_title = "stage 1 act 1"
 	game_coins = 0
 	game_coins_to_next_stage = 8
-	game_coins_to_next_stage_max = 20
+	game_coins_to_next_stage_max = 16
 	game_scale = 1
 	game_scale_target = 1
 	game_script = nil
@@ -440,7 +441,7 @@ function s_bird(_x)
 end 
 
 function s_lightning_strike(_time, _firelife)
-	local firelife = _firelife or 0
+	local firelife = _firelife or -1
 	if(time()%_time == 0) add_new_can(player.x, 80, 0, 3, firelife)
 end
 
@@ -459,17 +460,20 @@ end
 
 function flower_step(self)
 	if (col_with_player(self.x, self.y+2) or col_with_player(self.x+7, self.y+2)) then
-		if (self.anim_index == 1) del(vfx, self)
-		if (self.anim_index == 2) then
+		if (self.anim_index == 1) then
+			del(vfx, self)
+		elseif (self.anim_index == 2) then
 			self.animation = {158,158,158,158,158}
 			self.anim_index = 4
-		end
-		if (self.anim_index == 3) then
+			set_message("you've killed it!", 60)
+			sfx(12, 3)
+		elseif (self.anim_index == 3) then
 			s_one_up()
 			player_double_jump = true
 			self.animation = {159,159,159,159,159}
 			self.anim_index = 4
 			sfx(20, 3)
+			set_message("1up!", 60)
 		end 
 	end 
 end
@@ -490,7 +494,7 @@ function s_one_up()
 end 
 
 function s_conditional_one_up()
-	if(game_lives <= 1) s_one_up()
+	if(game_lives <= 2) s_one_up()
 end 
 
 -- Spawn things
@@ -507,7 +511,6 @@ function spawn_things()
 		if(game_stage_has_changed) set_message("stage 1 act 3", 60, true)
 		s_can(-8, 5, 1)
 		clouds_active=true
-
 
 	elseif(game_stage == 4 ) then
 		if(game_stage_has_changed) then 
@@ -530,7 +533,6 @@ function spawn_things()
 		s_can(136, 3, 2, -1)
 		s_leaves(136)
 
-
 	elseif(game_stage == 7 ) then
 		if(game_stage_has_changed) then
 			set_message("stage 3 act 1", 60, true)
@@ -543,15 +545,19 @@ function spawn_things()
 		s_lightning_strike(5)
 
 	elseif(game_stage == 8 ) then
-		if(game_stage_has_changed) set_message("stage 3 act 2", 60, true)
-		s_clear_fire()
+		if(game_stage_has_changed) then
+			set_message("stage 3 act 2", 60, true)
+			s_clear_fire()
+		end
 		s_rain()
 		s_lightning_strike(4)
 
 	elseif(game_stage == 9 ) then
-		if(game_stage_has_changed) set_message("stage 3 act 3", 60, true)
-		player_wind = -0.125
-		s_clear_fire()
+		if(game_stage_has_changed) then
+			set_message("stage 3 act 3", 60, true)
+			player_wind = -0.125
+			s_clear_fire()
+		end
 		s_rain() 
 		s_rain()
 		s_lightning_strike(3)
@@ -559,7 +565,10 @@ function spawn_things()
 
 	
 	elseif(game_stage == 10 ) then
-		if(game_stage_has_changed) set_message("intermission 1", 60, true)
+		if(game_stage_has_changed) then
+			set_message("intermission 1", 60, true)
+			s_clear_fire()
+		end 
 		player_wind = 0
 		s_sprinkle()
 		game_scale_target = 0.5
@@ -570,6 +579,7 @@ function spawn_things()
 		if(game_stage_has_changed) then
 			set_message("stage 4 act 1", 60, true)
 			s_conditional_one_up()
+			s_clear_fire()
 		end 
 		game_map_pal_index = 5
 		clouds_active=false
@@ -578,7 +588,7 @@ function spawn_things()
 		game_scale_target = 1.3
 		--if(game_stage_has_changed) add_new_coin(64,64)
 		--if(time()%5 == 0) add_new_bird(140, 24+rnd(36), rnd({1, 0.8}))	
-		s_sprinkle()
+		--s_sprinkle()
 		if(time()%5 == 0) s_bird(140)
 
 	elseif(game_stage == 12 ) then
@@ -608,7 +618,6 @@ function spawn_things()
 		end
 		s_leaves_pink()
 
-
 	elseif(game_stage == 15 ) then
 		if(game_stage_has_changed) then
 			set_message("stage 5 act 2", 60, true)
@@ -622,13 +631,13 @@ function spawn_things()
 		s_can(136, 3, 2, -1)
 		s_can(-8, 3, 1, 1)
 		if(time()%5 == 0) s_bird(140)
-		clouds_active = true
 		s_leaves_pink()
 
 	elseif(game_stage == 17 ) then
 		if(game_stage_has_changed) then
 			set_message("stage 6 act 1", 60, true)
 			s_tortle()
+			clouds_active = true
 			game_map_pal_index = 9
 			player_friction = 0
 			s_conditional_one_up()
@@ -667,48 +676,67 @@ function spawn_things()
 		end 
 	elseif(game_stage == 21 ) then
 		if(game_stage_has_changed) then
-			set_message("stage 7 act 1", 60, true)
+			set_message("nine", 60, true)
 			game_scale_target = 1.6
 			s_conditional_one_up()
-			add_new_lightningbolt(0, 32000)
-			add_new_lightningbolt(120, 32000)
+			add_new_lightningbolt(0)
+			add_new_lightningbolt(120)
 		end 
 	elseif(game_stage == 22 ) then
 		if(game_stage_has_changed) then
-			set_message("stage 7 act 2", 60, true)
+			set_message("eight", 60, true)
+			game_scale_target = 1.7
+			add_new_lightningbolt(8)
+			add_new_lightningbolt(112)
 		end 
 	elseif(game_stage == 23 ) then
 		if(game_stage_has_changed) then
-			set_message("stage 7 act 3", 60, true)
+			set_message("seven", 60, true)
+			game_scale_target = 1.8
+			add_new_lightningbolt(16)
+			add_new_lightningbolt(104)
 		end 
 	elseif(game_stage == 24 ) then
 		if(game_stage_has_changed) then
-			set_message("stage 8 act 1", 60, true)
+			set_message("six", 60, true)
+			game_scale_target = 1.9
+			add_new_lightningbolt(24)
+			add_new_lightningbolt(96)
 			game_map_pal_index = 10
 		end 
 	elseif(game_stage == 25 ) then
 		if(game_stage_has_changed) then
-			set_message("stage 8 act 2", 60, true)
+			set_message("five", 60, true)
+			game_scale_target = 2
+			add_new_lightningbolt(32)
+			add_new_lightningbolt(88)
 		end 
 	elseif(game_stage == 26 ) then
 		if(game_stage_has_changed) then
-			set_message("stage 8 act 3", 60, true)
+			set_message("four", 60, true)
+			add_new_lightningbolt(40)
+			add_new_lightningbolt(80)
 		end 
 	elseif(game_stage == 27 ) then
 		if(game_stage_has_changed) then
-			set_message("stage 9 act 1", 60, true)
+			set_message("three", 60, true)
+			add_new_lightningbolt(48)
+			add_new_lightningbolt(72)
 		end 
 	elseif(game_stage == 28 ) then
 		if(game_stage_has_changed) then
-			set_message("stage 9 act 2", 60, true)
+			set_message("two", 60, true)
+			add_new_lightningbolt(56)
+			add_new_lightningbolt(64)
 		end 
 	elseif(game_stage == 28 ) then
 		if(game_stage_has_changed) then
-			set_message("stage 9 act 3", 60, true)
+			set_message("one", 60, true)
 		end 
-	elseif(game_stage == 29 ) then
+	elseif(game_stage >= 29 ) then
 		if(game_stage_has_changed) then
-			set_message("Final Stage", 60, true)
+			set_message("zero", 60, true)
+			game_scale_target +=0.1
 		end 
 	end 
 end

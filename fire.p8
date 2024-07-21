@@ -20,7 +20,7 @@ function add_new_fire(_x, _y, _life)
         anim_index = 1,
         anim_timer = 0,
         anim_speed = 3,
-        life = _life or 0,
+        life = _life or -1,
 
         draw=function(self)
             spr(self.animation[self.anim_index], self.x, self.y) 
@@ -44,7 +44,7 @@ function add_new_fire(_x, _y, _life)
             self.life -= 1
 
             -- Kill after life is up 
-            if(self.life <= 0) then
+            if(self.life == 0) then
                 del(fire,self)
             end
 
